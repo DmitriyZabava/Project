@@ -1,0 +1,34 @@
+/* .menu {
+    height: 60px;
+    box-shadow: 0 10px 10px 0 #e0e0e0;
+} */
+/* .menu__container {
+    position: relative;
+} */
+/* .catalog {
+    position: absolute;
+    width: 260px;
+    top: 0;
+    background-color: #fff;
+} */
+/* .catalog__header {
+    height: 60px;
+    font-weight: bold;
+    padding-left: 20px;
+    padding-right: 20px;
+    border: 1px solid #e0e0e0;
+    border-bottom: none;
+    border-top: none;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+} */
+
+/* .catalog__list {
+    position: relative;
+    z-index: 2;
+} */
+/* ul {
+    padding: 0;
+    margin: 0;
+} */

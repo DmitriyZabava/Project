@@ -1,0 +1,21 @@
+{
+    "name": "sshop_project",
+    "version": "0.1.0",
+    "description": "diplom project",
+    "main": "App.js",
+    "scripts": {
+        "server": "npm run server --prefix server",
+        "client": "npm start --prefix client",
+        "dev": "concurrently \"npm run server\" \"npm run client\""
+    },
+    "keywords": [
+        "react",
+        "redux",
+        "node"
+    ],
+    "author": "Dmitriy Zabava <zdw1978@gmail.com>",
+    "license": "ISC",
+    "devDependencies": {
+        "concurrently": "^7.6.0"
+    }
+}
