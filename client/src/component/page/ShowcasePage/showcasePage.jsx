@@ -1,6 +1,7 @@
 import AtoBrandList from "../../ui/AtoBrandList/autoBrandList";
 import ProductsList from "../../ui/ProductsList";
 
+
 function ShowcasePage() {
     return (
         <div>

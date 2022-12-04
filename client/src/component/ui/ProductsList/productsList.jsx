@@ -1,18 +1,18 @@
 import {useSelector} from "react-redux";
 
-// import {getProducts, getProductsLoadingStatus} from "../../../store/product";
+
 import AutoModelsCard from "../ProductCard";
 import {getAutoModels, getAutoModelsLoadStatus} from "../../../store/autoModels";
+import Loader from "../../common/Loader";
 
 function ProductsList() {
     const autoModels = useSelector(getAutoModels());
     const autoModelsLoading = useSelector(getAutoModelsLoadStatus());
-    console.log("AutoProductList", autoModels, autoModelsLoading);
-    // const products = useSelector(getProducts());
-    // const productLoading = useSelector(getProductsLoadingStatus());
 
     if(autoModelsLoading) {
-        return "...Loading";
+        return ( <div className="loader flex justify-center mt-20">
+            <Loader/>
+        </div> )
     } else {
         return (
             <div className="justify-end">
