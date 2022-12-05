@@ -8,9 +8,7 @@
     align-items: center;
     display: flex;
 }
-.catalog__item:last-child .catalog__link {
-    border-bottom: 1px solid #e0e0e0;
-}
+
 .catalog__link-img {
     margin-right: 10px;
     margin-top: -3px;

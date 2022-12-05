@@ -2,9 +2,9 @@ import AdminPage from "../page/adminPage";
 import AuthLayout from "../page/authLayout";
 import BasketPage from "../page/basketPage";
 import LoginPage from "../page/loginPage";
-import ProductPage from "../page/productPage";
 import RegisterPage from "../page/registerPage";
 import ShowcasePage from "../page/ShowcasePage";
+import OneModelPage from "../page/OneModelPage";
 
 export const routes = [
     {
@@ -16,8 +16,12 @@ export const routes = [
         component: ShowcasePage,
     },
     {
-        path: "/product/:productId?",
-        component: ProductPage,
+        path: "/:brand?",
+        component: ShowcasePage,
+    },
+    {
+        path: "/:brand?/:modelsId?",
+        component: OneModelPage,
     },
     {
         path: "/basket",

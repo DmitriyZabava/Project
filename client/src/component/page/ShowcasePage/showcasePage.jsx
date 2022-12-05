@@ -1,24 +1,87 @@
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { getaAtoBrand, getAutoBrandLoadStatus } from "../../../store/autoBrand";
+import {
+    getAutoModels,
+    getAutoModelsLoadStatus,
+} from "../../../store/autoModels";
+import paginate from "../../../utils/paginate";
+import Loader from "../../common/Loader";
+import Pagination from "../../common/Pagination";
 import AtoBrandList from "../../ui/AtoBrandList/autoBrandList";
-import ProductsList from "../../ui/ProductsList";
-
+import AutoModelsList from "../../ui/AutoModelsList";
 
 function ShowcasePage() {
-    return (
-        <div>
-            <div className='font-bold  h-16 px-5  justify-between items-center flex '>
-                <span>Categories</span>
-            </div>
-            <div className='grid grid-cols-5'>
-                <div className=' col-span-1 '>
-                    <AtoBrandList />
-                </div>
+    const autoModels = useSelector(getAutoModels());
+    const autoModelsLoading = useSelector(getAutoModelsLoadStatus());
+    const autoBrand = useSelector(getaAtoBrand());
+    const autoBrandLoading = useSelector(getAutoBrandLoadStatus());
 
-                <div className='col-span-4 col-end'>
-                    <ProductsList />
+    const [selectedBrand, setSelectedBrand] = useState();
+
+    const pageSize = 8;
+    const [currentPage, setCurrentPage] = useState(1);
+    const handlePageChange = (pageIndex) => {
+        setCurrentPage(pageIndex);
+    };
+
+    const handleBrandSelect = (brand) => {
+        setSelectedBrand(brand);
+    };
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [selectedBrand]);
+
+    console.log("brand", selectedBrand);
+
+    if (autoModels && autoBrand) {
+        const filteredModels = selectedBrand
+            ? autoModels.filter((model) => model.brand === selectedBrand)
+            : autoModels;
+        const count = filteredModels.length;
+        const autoModelsSliсe = paginate(filteredModels, currentPage, pageSize);
+
+        const clearFilter = () => {
+            setSelectedBrand();
+        };
+        if (!autoBrandLoading && !autoModelsLoading) {
+            return (
+                <div className=''>
+                    <div className='font-bold  h-16 px-5  justify-between items-center flex '>
+                        <span>Categories</span>
+                    </div>
+                    <div className='flex flex-row'>
+                        <div className='flex flex-col shrink-0 basis-1/4'>
+                            <AtoBrandList
+                                onBrandSelect={handleBrandSelect}
+                                autoBrand={autoBrand}
+                                selectedBrand={selectedBrand}
+                                clearFilter={clearFilter}
+                            />
+                        </div>
+
+                        <div className='flex flex-col basis-3/4 '>
+                            <AutoModelsList autoModels={autoModelsSliсe} />
+                            <div className='flex content-center'>
+                                <Pagination
+                                    itemsCount={count}
+                                    pageSize={pageSize}
+                                    currentPage={currentPage}
+                                    onPageChange={handlePageChange}
+                                />
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    );
+            );
+        } else {
+            return (
+                <div className='loader flex justify-center mt-20'>
+                    <Loader />
+                </div>
+            );
+        }
+    }
 }
 
 export default ShowcasePage;

@@ -1,0 +1,15 @@
+.left {
+    flex: 1;
+}
+
+.images {
+    flex: 1;
+}
+
+.mainImg {
+    flex: 5;
+}
+
+.right {
+    flex: 1;
+}
