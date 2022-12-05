@@ -32,8 +32,6 @@ function ShowcasePage() {
         setCurrentPage(1);
     }, [selectedBrand]);
 
-    console.log("brand", selectedBrand);
-
     if (autoModels && autoBrand) {
         const filteredModels = selectedBrand
             ? autoModels.filter((model) => model.brand === selectedBrand)

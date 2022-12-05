@@ -3,8 +3,9 @@ import AuthLayout from "../page/authLayout";
 import BasketPage from "../page/basketPage";
 import LoginPage from "../page/loginPage";
 import RegisterPage from "../page/registerPage";
-import ShowcasePage from "../page/ShowcasePage";
-import OneModelPage from "../page/OneModelPage";
+// import ShowcasePage from "../page/ShowcasePage";
+// import OneModelPage from "../page/OneModelPage";
+import Showcase from "../../layouts/showcase";
 
 export const routes = [
     {
@@ -12,17 +13,17 @@ export const routes = [
         component: AdminPage,
     },
     {
-        path: "/",
-        component: ShowcasePage,
+        path: "/:brandId?/:modelsId?",
+        component: Showcase,
     },
-    {
-        path: "/:brand?",
-        component: ShowcasePage,
-    },
-    {
-        path: "/:brand?/:modelsId?",
-        component: OneModelPage,
-    },
+    // {
+    //     path: "/:brandId?",
+    //     component: ShowcasePage,
+    // },
+    // {
+    //     path: ,
+    //     component: OneModelPage,
+    // },
     {
         path: "/basket",
         component: BasketPage,

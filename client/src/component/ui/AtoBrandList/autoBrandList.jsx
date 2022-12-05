@@ -7,30 +7,34 @@ function autoBrandList({
     clearFilter,
 }) {
     const notActive =
-        "h-14 text-lg text-sky-900 px-5 border border-gray-200 hover:bg-slate-200 ";
+        "h-14 text-lg text-sky-900 px-5 border border-gray-200 hover:bg-slate-400 ";
     const active =
         "h-14 text-lg text-sky-900 px-5 border border-gray-300 bg-slate-300 ";
 
     return (
         <ul className='  '>
+            <Link to='/'>
+                <li className={notActive} role='button' onClick={clearFilter}>
+                    Все модели
+                </li>
+            </Link>
             {autoBrand.map((brand) => {
                 return (
-                    <li
-                        key={brand._id}
-                        to={`/${brand.name}`}
-                        role='button'
-                        onClick={() => onBrandSelect(brand.id)}
-                        className={
-                            brand.id === selectedBrand ? active : notActive
-                        }
-                    >
-                        <Link to={`/${brand.id}`}>{brand.name}</Link>
-                    </li>
+                    <Link to={`/${brand.id}`} key={brand._id}>
+                        <li
+                            key={brand._id}
+                            to={`/${brand.name}`}
+                            role='button'
+                            onClick={() => onBrandSelect(brand.id)}
+                            className={
+                                brand.id === selectedBrand ? active : notActive
+                            }
+                        >
+                            {brand.name}
+                        </li>
+                    </Link>
                 );
             })}
-            <li className={notActive} role='button' onClick={clearFilter}>
-                <span>All Brands</span>
-            </li>
         </ul>
     );
 }
