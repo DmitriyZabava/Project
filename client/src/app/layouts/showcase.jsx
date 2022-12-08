@@ -6,6 +6,7 @@ import { getAutoModelById } from "../store/autoModels";
 
 const Showcase = () => {
     const { modelsId } = useParams();
+    console.log(modelsId);
     const selectedAutoModel = useSelector(getAutoModelById(modelsId));
 
     if (modelsId) {
