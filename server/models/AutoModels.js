@@ -1,10 +1,10 @@
 const {Schema, model} = require("mongoose");
 
-const schema = new Schema({
+const AutoModels = new Schema({
     id: {type: String, required: true},
     name: {type: String, required: true},
     // brand: {type: Schema.Types.ObjectId, ref: "AutoBrand"},
-    brand: {type: String},
+    brand: {type: String, ref: "AutoBrand"},
     title: {type: String},
     price: {type: Number, required: true},
     image: {type: String},
@@ -12,8 +12,9 @@ const schema = new Schema({
     color: {type: String, required: true},
     isAvailable: Number,
     discount: Number,
+    description: {type: Object, ref: "Description"}
 }, {
     timestamps: true
 });
 
-module.exports = model("AutoModels", schema);
+module.exports = model("AutoModels", AutoModels);

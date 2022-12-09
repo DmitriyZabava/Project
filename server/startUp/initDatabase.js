@@ -20,6 +20,10 @@ module.exports = async () => {
             await createInitialEntity(AutoModels, autoModelsMock);
         }
 
+        const description = await Description.find();
+        if(description.length !== descriptionMock.length) {
+            await createInitialEntity(Description, descriptionMock);
+        }
 
     } catch(error) {
     }

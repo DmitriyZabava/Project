@@ -1,8 +1,8 @@
 const {Schema, model} = require("mongoose");
 
-const schema = new Schema({
+const Description = new Schema({
     material: {type: String},
-    garanty: {type: String},
+    guarantee: {type: String},
     section: {type: String},
     skeleton: {type: String},
     install: {type: String},
@@ -13,4 +13,4 @@ const schema = new Schema({
     timestamps: true
 });
 
-module.exports = model("Description", schema);
+module.exports = model("Description", Description);
