@@ -8,23 +8,18 @@ const router = express.Router({mergeParams: true});
 router.post("/signUp",
     body("email").isEmail(),
     body("password").isLength({min: 8, max: 22}),
-    body("username").isLength({min: 3, max: 33})
-    , AuthController.signUp);
-router.post("/login", AuthController.login);
-router.post("/logout", AuthController.logout);
-router.get("/refreshToken", AuthController.refreshToken);
-router.get("/users", async (req, res, next) => {
-    try {
-        const userRole = new Role();
-        const adminRole = new Role({role: "ADMIN"});
-        const moderRole = new Role({role: "MODERATOR"});
-        await userRole.save();
-        await adminRole.save();
-        await moderRole.save();
-        res.json("role created")
-    } catch(e) {
+    body("username").isLength({min: 3, max: 33}),
+    AuthController.signUp);
 
-    }
-});
+router.post("/login",
+    body("email").isEmail(),
+    body("password").notEmpty(),
+    AuthController.login);
+
+router.post("/logout", AuthController.logout);
+
+router.post("/token", AuthController.token);
+
+
 
 module.exports = router;

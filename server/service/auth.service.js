@@ -24,12 +24,32 @@ class AuthService {
     }
 
 
-    // async login(email, password) {
-    // }
-    //
-    //
-    // async logout(email, password) {
-    // }
+    async login(email, password) {
+        const candidate = await User.findOne({email});
+        if(!candidate) {
+            throw new Error(`Пользователь с таким email - ${email} , не найден `);
+        }
+
+        const isPasswordEqual = await bcrypt.compare(password, candidate.password);
+
+        if(!isPasswordEqual) {
+            throw new Error(`Пароль введён не корректно`);
+        }
+
+        const {_id, role, username} = candidate;
+        const user = {_id, role, username, email};
+        const tokens = tokenService.generateTokens({user});
+        await tokenService.saveToken(_id, tokens.refreshToken);
+        return {...tokens, user};
+
+
+    }
+
+
+    async logout(email, password) {
+    }
+
+
 }
 
 

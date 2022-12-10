@@ -1,4 +1,5 @@
 const AuthService = require("../service/auth.service");
+const TokenService = require("../service/token.service");
 const {validationResult} = require("express-validator");
 
 class AuthController {
@@ -30,6 +31,19 @@ class AuthController {
 
     async login(req, res, next) {
         try {
+            const errors = validationResult(req);
+            if(!errors.isEmpty()) {
+                return res.status(400).json({
+                    error: {
+                        message: "INVALID_DATA",
+                        code: 400
+                    }
+                });
+            }
+            const {email, password} = req.body;
+            const userData = await AuthService.login(email, password);
+
+            return res.status(200).send(userData);
         } catch(error) {
             res.status(500).json({
                 error: error.message,
@@ -50,9 +64,26 @@ class AuthController {
         }
     }
 
-    async refreshToken(req, res, next) {
+    async token(req, res, next) {
         try {
-            res.json(["rerer", "gdgdgf", 1234]);
+            const {refreshToken} = req.body;
+
+            const data = TokenService.validateRefresh(refreshToken);
+            const {user} = data;
+
+            const dbToken = await TokenService.findToken(refreshToken);
+
+
+            if(!user || !dbToken || user._id !== dbToken?.userId?.toString()) {
+                return res.status(401).json({
+                    message: "Unautorized"
+                });
+            }
+
+            const tokens = TokenService.generateTokens({user});
+            await TokenService.saveToken(user._id, tokens.refreshToken);
+
+            res.status(200).send({...tokens, user});
         } catch(error) {
             res.status(500).json({
                 error: error.message,
