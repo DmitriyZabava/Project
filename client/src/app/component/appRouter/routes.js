@@ -1,59 +1,74 @@
-import {Navigate} from "react-router-dom"
+import { Navigate } from "react-router-dom";
 
 import AdminPage from "../page/adminPage";
 import AuthLayout from "../../layouts/authLayout";
 import BasketPage from "../page/basketPage";
-import LoginPage from "../page/loginPage";
-import RegisterPage from "../page/registerPage";
 import OneModelPage from "../page/OneModelPage";
 import Showcase from "../../layouts/showcase";
+import LoginForm from "../ui/loginForm";
+import RegisterForm from "../ui/registerForm";
 
-
-const routes =()=> [
+const routes = () => [
     {
-        path: "/", element: <Showcase/>,children: [
+        path: "/",
+        element: <Showcase />,
+        children: [
             {
-                path: ":brand/*",element: <Showcase/>,children:[
+                path: ":brand/*",
+                element: <Showcase />,
+                children: [
                     {
-                        path: ":modelsId",element: <OneModelPage/>
-                    }
-                ]
+                        path: ":modelsId",
+                        element: <OneModelPage />,
+                    },
+                ],
             },
             {
-                path: "*",element: <Navigate to="/"/>
-            }
-        ]
+                path: "*",
+                element: <Navigate to='/' />,
+            },
+        ],
     },
     {
-        path: "auth", element: <AuthLayout/>, children: [
+        path: "auth",
+        element: <AuthLayout />,
+        children: [
             {
-                path: "", element: <Navigate to="/auth/signUp"/>
+                path: "",
+                element: <Navigate to='/auth/signUp' />,
             },
             {
-                path: "login", element: <LoginPage/>
+                path: "login",
+                element: <LoginForm />,
             },
             {
-                path:"signUp",element:<RegisterPage/>
+                path: "signUp",
+                element: <RegisterForm />,
             },
             {
-                path: "*",element: <Navigate to="/auth/signUp"/>
-            }
-        ]
+                path: "*",
+                element: <Navigate to='/auth/signUp' />,
+            },
+        ],
     },
     {
-        path: "basket",element: <BasketPage/>,children: [
+        path: "basket",
+        element: <BasketPage />,
+        children: [
             {
-                path: "*",element: <Navigate to="/auth/signUp"/>
-            }
-        ]
+                path: "*",
+                element: <Navigate to='/auth/signUp' />,
+            },
+        ],
     },
     {
-        path: "admin",element: <AdminPage/>
+        path: "admin",
+        element: <AdminPage />,
     },
     {
-        path: "*",element: <Navigate to="/"/>
-    }
-
+        path: "*",
+        element: <Navigate to='/' />,
+    },
 ];
 
-export default routes
+export default routes;

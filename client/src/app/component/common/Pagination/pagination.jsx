@@ -1,4 +1,6 @@
 import React from "react";
+import PropTypes from "prop-types";
+
 import intToArray from "../../../utils/intToArray";
 
 function Pagination({ itemsCount, pageSize, onPageChange, currentPage }) {
@@ -62,5 +64,12 @@ function Pagination({ itemsCount, pageSize, onPageChange, currentPage }) {
         </div>
     );
 }
+
+Pagination.propTypes = {
+    itemsCount: PropTypes.number,
+    pageSize: PropTypes.number,
+    onPageChange: PropTypes.func,
+    currentPage: PropTypes.number,
+};
 
 export default Pagination;

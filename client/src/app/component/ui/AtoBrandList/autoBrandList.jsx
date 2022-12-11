@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 function autoBrandList({
@@ -38,5 +39,12 @@ function autoBrandList({
         </ul>
     );
 }
+
+autoBrandList.propTypes = {
+    autoBrand: PropTypes.array,
+    onBrandSelect: PropTypes.func,
+    selectedBrand: PropTypes.string,
+    clearFilter: PropTypes.func,
+};
 
 export default autoBrandList;

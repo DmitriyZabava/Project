@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import AutoModelsCard from "../AutoModelsCard";
 
 function AutoModelsList({ autoModels }) {
@@ -11,5 +13,9 @@ function AutoModelsList({ autoModels }) {
         </div>
     );
 }
+
+AutoModelsList.propTypes = {
+    autoModels: PropTypes.array,
+};
 
 export default AutoModelsList;

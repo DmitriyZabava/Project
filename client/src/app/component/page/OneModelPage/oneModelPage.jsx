@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import priceWithDiscount from "../../../utils/priceWithDiscount";
 import InfoCard from "../../ui/infoCard";
 
@@ -73,4 +75,19 @@ function OneModelPage({
         </>
     );
 }
+
+OneModelPage.propTypes = {
+    brand: PropTypes.string,
+    color: PropTypes.string,
+    discount: PropTypes.number,
+    image: PropTypes.string,
+    isAvailable: PropTypes.number,
+    name: PropTypes.string,
+    price: PropTypes.number,
+    size: PropTypes.string,
+    title: PropTypes.string,
+    _id: PropTypes.string,
+    id: PropTypes.string,
+};
+
 export default OneModelPage;
