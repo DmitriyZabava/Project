@@ -3,20 +3,24 @@ const mongoose = require("mongoose");
 const config = require("config");
 const cors = require("cors");
 const createError = require("http-errors");
+const fileUpload = require("express-fileupload");
+
 
 const errorMiddleware = require("./middleware/error.middleware");
 const initDatabase = require("./startUp/initDatabase");
 const routes = require("./routes");
+
 const app = express();
 const PORT = config.get("PORT") ?? 5000;
+
 
 app.use(cors(config.get("corsOptions")));
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(fileUpload({}));
 
-app.use("/api", routes);
-
+app.use("/api/v1", routes);
 
 async function start() {
     try {
@@ -24,8 +28,7 @@ async function start() {
             initDatabase();
         });
         await mongoose.connect(config.get("mongoUri"));
-        app.listen(PORT, () =>
-            console.log(`Server start on Port ${PORT}...`));
+        app.listen(PORT, () => console.log(`Server start on Port ${PORT}...`));
     } catch(error) {
         console.log(error.message);
         process.exit(1);

@@ -1,11 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import TextField from "../common/form/textField";
 import { validator } from "../../utils/validator";
 import { validLoginConfig } from "../../utils/validator.config";
-import ChekcBox from "../common/form/checkBox";
+import CheckBox from "../common/form/checkBox";
+import { useDispatch } from "react-redux";
+import { login } from "../../store/auth";
+import {
+    activeButtonClassName,
+    disabledButtonClassName,
+} from "../../utils/classesForSubmitButton";
+import { useLocation } from "react-router-dom";
 
 function LoginForm() {
+    const dispatch = useDispatch();
+    const location = useLocation();
+
     const [data, setData] = useState({
         email: "",
         password: "",
@@ -34,16 +44,12 @@ function LoginForm() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log(data);
+        const isValid = validate();
+        if (!isValid) return;
+        dispatch(login(data));
+
+        console.log("loginData", data);
     };
-
-    const disabledButtonClassName = `w-full text-white bg-sky-300 focus:ring-4 
-    focus:outline-none  font-medium rounded-lg text-sm px-5
-     py-2.5 text-center dark:bg-sky-300 `;
-
-    const activeButtonClassName = `w-full text-white bg-sky-600 hover:bg-sky-700 
-    focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm 
-    px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700`;
 
     return (
         <div>
@@ -65,7 +71,7 @@ function LoginForm() {
                     error={errors.password}
                 />
                 <div className='flex items-center justify-between'>
-                    <ChekcBox
+                    <CheckBox
                         name='remember'
                         value={data.remember}
                         label='Запомнить аккаунт'

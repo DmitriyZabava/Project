@@ -1,1 +1,3 @@
-{"apiEndPoint": "http://localhost:5000/api/"}
+{
+    "apiEndPoint": "http://localhost:5000/api/v1/"
+}

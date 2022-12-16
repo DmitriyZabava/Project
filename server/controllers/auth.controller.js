@@ -15,7 +15,7 @@ class AuthController {
                 });
             }
             const {email, password, username} = req.body;
-
+            
             const userData = await AuthService.signUp(email, password, username);
 
             return res.status(200).send(userData);
@@ -76,7 +76,7 @@ class AuthController {
 
             if(!user || !dbToken || user._id !== dbToken?.userId?.toString()) {
                 return res.status(401).json({
-                    message: "Unautorized"
+                    message: "Unauthorized"
                 });
             }
 

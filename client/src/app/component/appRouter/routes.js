@@ -1,6 +1,6 @@
-import { Navigate } from "react-router-dom";
+import {Navigate} from "react-router-dom";
 
-import AdminPage from "../page/adminPage";
+import AdminPage from "../page/AdminPage";
 import AuthLayout from "../../layouts/authLayout";
 import BasketPage from "../page/basketPage";
 import OneModelPage from "../page/OneModelPage";
@@ -8,66 +8,66 @@ import Showcase from "../../layouts/showcase";
 import LoginForm from "../ui/loginForm";
 import RegisterForm from "../ui/registerForm";
 
-const routes = () => [
+const routes = (isLoggetIn, currentUserRole) => [
     {
         path: "/",
-        element: <Showcase />,
+        element: <Showcase/>,
         children: [
             {
                 path: ":brand/*",
-                element: <Showcase />,
+                element: <Showcase/>,
                 children: [
                     {
                         path: ":modelsId",
-                        element: <OneModelPage />,
+                        element: <OneModelPage/>,
                     },
                 ],
             },
             {
                 path: "*",
-                element: <Navigate to='/' />,
+                element: <Navigate to="/"/>,
             },
         ],
     },
     {
         path: "auth",
-        element: <AuthLayout />,
+        element: <AuthLayout/>,
         children: [
             {
                 path: "",
-                element: <Navigate to='/auth/signUp' />,
+                element: <Navigate to="/auth/signUp"/>,
             },
             {
                 path: "login",
-                element: <LoginForm />,
+                element: <LoginForm/>,
             },
             {
                 path: "signUp",
-                element: <RegisterForm />,
+                element: <RegisterForm/>,
             },
             {
                 path: "*",
-                element: <Navigate to='/auth/signUp' />,
+                element: <Navigate to="/auth/signUp"/>,
             },
         ],
     },
     {
         path: "basket",
-        element: <BasketPage />,
+        element: <BasketPage/>,
         children: [
             {
                 path: "*",
-                element: <Navigate to='/auth/signUp' />,
+                element: <Navigate to="/auth/signUp"/>,
             },
         ],
     },
     {
         path: "admin",
-        element: <AdminPage />,
+        element: <AdminPage/>,
     },
     {
         path: "*",
-        element: <Navigate to='/' />,
+        element: <Navigate to="/"/>,
     },
 ];
 

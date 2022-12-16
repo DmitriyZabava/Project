@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 function NavBar() {
     return (
@@ -11,23 +11,24 @@ function NavBar() {
                     <li className='inline-block leading-relaxed py-4'>
                         <NavLink
                             className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
+                            to='/admin'
+                        >
+                            Admin
+                        </NavLink>
+                    </li>
+                    <li className='inline-block leading-relaxed py-4'>
+                        <NavLink
+                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
                             to='/'
                         >
                             Главная
                         </NavLink>
                     </li>
+
                     <li className='inline-block leading-relaxed py-4'>
                         <NavLink
                             className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to=''
-                        >
-                            About
-                        </NavLink>
-                    </li>
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/products'
+                            to='/'
                         >
                             Список Товаров
                         </NavLink>

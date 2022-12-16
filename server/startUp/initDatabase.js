@@ -11,17 +11,17 @@ const descriptionMock = require("../mockData/description.json");
 module.exports = async () => {
     try {
         const description = await Description.find();
-        if(description.length !== descriptionMock.length) {
+        if(description.length < descriptionMock.length) {
             await createInitialEntity(Description, descriptionMock);
         }
 
         const autoModels = await AutoModels.find();
-        if(autoModels.length !== autoModelsMock.length) {
+        if(autoModels.length < autoModelsMock.length) {
             await createInitialEntity(AutoModels, autoModelsMock);
         }
 
         const autoBrand = await AutoBrand.find();
-        if(autoBrand.length !== autoBrandMock.length) {
+        if(autoBrand.length < autoBrandMock.length) {
 
             await createBrand(AutoBrand, autoBrandMock, AutoModels);
         }

@@ -51,3 +51,52 @@ export const validLoginConfig = {
         },
     },
 };
+export const validCreateModel = {
+    id: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    name: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    brand: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    title: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    price: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    size: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+};
+export const validCreateBrand = {
+    id: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    name: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+    brand: {
+        isRequired: {
+            message: "Введите данные",
+        },
+    },
+};

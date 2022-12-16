@@ -1,11 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 
 import TextField from "../common/form/textField";
+import CheckBox from "../common/form/checkBox";
 import { validator } from "../../utils/validator";
 import { validRegisterConfig } from "../../utils/validator.config";
-import ChekcBox from "../common/form/checkBox";
 import { signUp } from "../../store/auth";
+import {
+    activeButtonClassName,
+    disabledButtonClassName,
+} from "../../utils/classesForSubmitButton";
 
 function RegisterForm() {
     const dispatch = useDispatch();
@@ -41,24 +45,16 @@ function RegisterForm() {
         event.preventDefault();
         const isValid = validate();
         if (!isValid) return;
-        dispatch(signUp(data));
-        console.log("data", data);
+        dispatch(signUp({ ...data }));
+        console.log("REgisterdata", data);
     };
-
-    const disabledButtonClassName = `w-full text-white bg-sky-300 focus:ring-4 
-    focus:outline-none  font-medium rounded-lg text-sm px-5
-     py-2.5 text-center dark:bg-sky-300 `;
-
-    const activeButtonClassName = `w-full text-white bg-sky-600 hover:bg-sky-700 
-    focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm 
-    px-5 py-2.5 text-center dark:bg-sky-600 dark:hover:bg-sky-700`;
 
     return (
         <div>
             <form className='space-y-4 md:space-y-6' onSubmit={handleSubmit}>
                 <TextField
                     label='Username'
-                    type='username'
+                    type='text'
                     value={data.username}
                     name='username'
                     onChange={handleChange}
@@ -81,7 +77,7 @@ function RegisterForm() {
                     error={errors.password}
                 />
                 <div className='flex items-center justify-between'>
-                    <ChekcBox
+                    <CheckBox
                         name='license'
                         value={data.license}
                         label='Соглашаюсь с правилами'
