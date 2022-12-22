@@ -9,6 +9,7 @@ const autoBrandSlice = createSlice({
         isLoading: true,
         error: null,
         lastFetch: null,
+        dataLoaded: false
     },
     reducers: {
         autoBrandRequested: (state) => {
@@ -18,6 +19,7 @@ const autoBrandSlice = createSlice({
             state.entities = action.payload;
             state.lastFetch = Date.now();
             state.isLoading = false;
+            state.dataLoaded = true;
         },
         autoBrandRequestedFailed: (state, action) => {
             state.error = action.payload;
@@ -54,6 +56,8 @@ export const getaAtoBrand = () => (state) => state.autoBrand.entities;
 
 export const getAutoBrandLoadStatus = () => (state) =>
     state.autoBrand.isLoading;
+
+export const getBrandDataStatus = () => (state) => state.autoBrand.dataLoaded;
 
 export const getAutoBrandById = (autoBrandId) => (state) => {
     if(state.autoBrand.entities) {

@@ -5,16 +5,21 @@ import {validator} from "../../utils/validator";
 import {validCreateModel} from "../../utils/validator.config";
 import TextField from "../common/form/textField";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
+import {useDispatch} from "react-redux";
+import {createModel} from "../../store/autoModels";
+import FileField from "../common/form/fileField";
 
 function CreateModels({onVisible}) {
+    const dispatch = useDispatch();
     const [errors, setErrors] = useState({});
+    const [image, setImg] = useState(( null ));
     const [data, setData] = useState({
         id: "",
         name: "",
         brand: "",
         title: "",
         price: "",
-        img: "",
+        color: "",
         size: "",
         isAvailable: "",
         discount: "",
@@ -29,7 +34,7 @@ function CreateModels({onVisible}) {
         setErrors(errors);
         return Object.keys(errors).length === 0;
     };
-    const isValide = Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0;
 
     const handleChange = (target) => {
         setData((prevState) => ( {
@@ -37,9 +42,23 @@ function CreateModels({onVisible}) {
             [target.name]: target.value,
         } ));
     };
+    const fileChange = (target) => {
+        setImg(target);
+    };
+
+    function createFormData(formData, payload) {
+        return Object.keys(payload).map(item => formData.append(`${item}`, payload[item]));
+
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const isValid = validate();
+        if(!isValid) return;
+        const formData = new FormData();
+        formData.append("img", image);
+        formData.append("data", JSON.stringify(data));
+        dispatch(createModel(formData));
         onVisible();
     };
 
@@ -96,12 +115,13 @@ function CreateModels({onVisible}) {
                 placeholder="3000"
                 error={errors.price}
             />
-            <TextField
+            <FileField
                 label="image"
                 type="file"
-                value={data.image}
+                value={data.img}
+                accept="image/*,.png,.jpg,.gif,.web"
                 name="img"
-                onChange={handleChange}
+                onChange={fileChange}
             />
             <TextField
                 label="Размер : Д х Ш х В"
@@ -110,6 +130,15 @@ function CreateModels({onVisible}) {
                 name="size"
                 onChange={handleChange}
                 placeholder="Размер: длина 310 мм, ширина 180 мм, высота 140 мм"
+                error={errors.size}
+            />
+            <TextField
+                label="Цвет"
+                type="text"
+                value={data.color}
+                name="color"
+                onChange={handleChange}
+                placeholder="Цвет черный"
                 error={errors.size}
             />
             <TextField
@@ -131,9 +160,9 @@ function CreateModels({onVisible}) {
             />
             <button
                 type="submit"
-                disabled={!isValide}
+                disabled={!isValid}
                 className={
-                    !isValide
+                    !isValid
                         ? disabledButtonClassName
                         : activeButtonClassName
                 }

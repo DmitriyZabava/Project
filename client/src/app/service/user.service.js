@@ -8,10 +8,7 @@ const userService = {
         const {data} = await httpServices.get(userEndPoint + id);
         return data;
     },
-    fetchAll: async () => {
-        const {data} = await httpServices.get(userEndPoint);
-        return data;
-    },
+
     create: async (payload) => {
         const {data} = await httpServices.put(
             userEndPoint + payload._id,

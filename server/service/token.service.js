@@ -11,6 +11,13 @@ class TokenService {
         return {accessToken, refreshToken, expiresIn: 3600};
     }
 
+    generateTokensForModerator(payload) {
+        const accessToken = jwt.sign(payload, config.get("accessSecret"), {expiresIn: "30m"});
+        const refreshToken = jwt.sign(payload, config.get("refreshSecret"), {expiresIn: "1d"});
+
+        return {accessToken, refreshToken, expiresIn: 3600};
+    }
+
     async saveToken(userId, refreshToken) {
         const existToken = await Token.findOne({userId});
         if(existToken) {
@@ -30,11 +37,29 @@ class TokenService {
         }
     }
 
-    async findToken(refreshToken) {
+    validateAccess(accessToken) {
         try {
-            return await Token.findOne({refreshToken});
+            return jwt.verify(accessToken, config.get("accessSecret"));
         } catch(e) {
             return null;
+        }
+    }
+
+    async findToken(refreshToken) {
+        try {
+
+            const token = await Token.findOne({refreshToken});
+            return token;
+        } catch(e) {
+            return null;
+        }
+    }
+
+    async removeToken(refreshToken) {
+        try {
+            return await Token.deleteOne({refreshToken});
+        } catch(error) {
+            return error;
         }
     }
 

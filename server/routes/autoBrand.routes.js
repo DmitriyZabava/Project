@@ -5,7 +5,7 @@ const router = express.Router({mergeParams: true});
 
 router.get("/", async (req, res) => {
     try {
-        const autoBrand = await AutoBrand.find();
+        const autoBrand = await AutoBrand.find().sort({name: 1});
         res.status(200).send(autoBrand);
     } catch(error) {
         res.status(500).json({

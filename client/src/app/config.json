@@ -1,3 +1,8 @@
 {
-    "apiEndPoint": "http://localhost:5000/api/v1/"
+  "apiEndPoint": "http://localhost:5000/api/v1/",
+  "adminEndPoint": {
+    "model": "admin/model/",
+    "brand": "admin/brand/",
+    "moderator": "admin/createModerator"
+  }
 }

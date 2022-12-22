@@ -1,62 +1,50 @@
 import {createAction, createSlice} from "@reduxjs/toolkit";
+
 import authService from "../service/auth.service";
 import localStorageService from "../service/localStorage.service";
-import userService from "../service/user.service";
+import {createUser, userLogOut} from "./user";
 
 
 const authSlice = createSlice({
     name: "auth",
     initialState: {
-        entities: null,
         isLoading: true,
-        currentUser: null,
+        entities: null,
         error: null,
-        auth: null,
-        isLoggetIn: false,
+        isLoggedIn: false,
 
     },
     reducers: {
-        authRequestSuccess: (state, action) => {
-            state.auth = action.payload;
-            state.isLoggetIn = true;
+        authRequested: (state) => {
+            state.error = null;
+            state.isLoading = true;
         },
-        authReceived: (state, action) => {
+        authRequestSuccess: (state, action) => {
             state.entities = action.payload;
+            state.isLoggedIn = true;
             state.isLoading = false;
         },
         authRequestedFailed: (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
         },
-        authRequested: (state) => {
-            state.error = null;
-        },
-        userCreated: (state, action) => {
-            state.currentUser = action.payload;
+        authLogOut: (state) => {
+            state.entities = null;
+            state.isLoggedIn = false;
         }
+
     },
 });
 const {reducer: authReducer, actions} = authSlice;
-const {authRequested, authRequestedFailed, authRequestSuccess, userCreated} = actions;
-const userCreateRequested = createAction("auth/userCreateRequested");
+const {authRequested, authRequestedFailed, authLogOut, authRequestSuccess} = actions;
+const checkAuthRequested = createAction("auth/checkAuthRequested");
 
-function createUser(id) {
-    return async function(dispatch) {
-        dispatch(userCreateRequested());
-        try {
-            const content = await userService.get(id);
-            console.log("Content", content);
-            dispatch(userCreated(content));
-        } catch(error) {
 
-        }
-    };
-};
 export const signUp =
     ({email, password, username, ...rest}) =>
         async (dispatch) => {
             dispatch(authRequested());
-            
+
             try {
                 const data = await authService.signUp({
                     email,
@@ -65,8 +53,8 @@ export const signUp =
                 });
                 console.log("SignUpData", data);
                 localStorageService.setTokens(data);
-                dispatch(authRequestSuccess({user: data.user}));
-                dispatch(createUser(data.user._id));
+                dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
+                dispatch(createUser(data.userId));
             } catch(error) {
                 dispatch(authRequestedFailed(error.message));
             }
@@ -76,18 +64,43 @@ export const login = ({email, password}) => async (dispatch) => {
     dispatch(authRequested());
     try {
         const data = await authService.login({email, password});
-        console.log("Logindata", data);
         localStorageService.setTokens(data);
-        dispatch(authRequestSuccess({user: data.user}));
-        dispatch(createUser(data.user._id));
+        dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
+        dispatch(createUser(data.userId));
     } catch(error) {
         dispatch(authRequestedFailed(error.message));
     }
 };
 
-export const getIsLoggetIn = () => (state) => state.auth.isLoggetIn;
+export const logOut = () => async (dispatch) => {
+    try {
+        await authService.logout();
+        dispatch(authLogOut());
+        dispatch(userLogOut());
+    } catch(error) {
+        return error.message;
+    }
 
-export const getCurrentUserRole = () => (state) => state.auth.currentUser?.role;
+
+};
+
+export const checkAuth = () => async (dispatch) => {
+    dispatch(checkAuthRequested());
+    try {
+        const data = await authService.refresh();
+        localStorageService.setTokens(data);
+        dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
+        dispatch(createUser(data.userId));
+    } catch(error) {
+        dispatch(authRequestedFailed(error.message));
+
+    }
+};
+export const getIsAuthLoadingStatus = () => (state) => state.auth.isLoading
+
+export const getIsLoggedIn = () => (state) => state.auth.isLoggedIn;
+
+export const getCurrentUserRole = () => (state) => state.auth.entities?.currentUser?.role;
 
 
 export default authReducer;

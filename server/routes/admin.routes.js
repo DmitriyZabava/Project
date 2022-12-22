@@ -4,17 +4,17 @@ const AdminController = require("../controllers/admin.controller");
 
 const router = express.Router({mergeParams: true});
 
-router.get("/model/:id", AdminController.getModelById);
-router.post("/model", AdminController.createModel);
-router.patch("/model/:id", AdminController.updateModel);
-router.delete("/model/:id", AdminController.deleteModel);
+router.get("/model/get/:id", AdminController.getModelById);
+router.post("/model/create", AdminController.createModel);
+router.patch("/model/update/:id", AdminController.updateModel);
+router.delete("/model/delete/:id", AdminController.deleteModel);
 
-router.get("/brand/:id", AdminController.getBrandBYId);
-router.post("/brand", AdminController.createBrand);
-router.patch("/brand/:id", AdminController.updateBrand);
-router.delete("/brand/:id", AdminController.deleteBrand);
+router.get("/brand/get/:id", AdminController.getBrandBYId);
+router.post("/brand/create", AdminController.createBrand);
+router.patch("/brand/update/:id", AdminController.updateBrand);
+router.delete("/brand/delete/:id", AdminController.deleteBrand);
 
-router.post("/createModer", AdminController.createModerator);
+router.post("/createModerator", AdminController.createModerator);
 
 
 module.exports = router;

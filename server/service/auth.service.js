@@ -4,6 +4,9 @@ const createError = require("http-errors");
 
 const User = require("../models/User");
 const Role = require("../models/Role");
+const Basket = require("../models/Basket");
+const Favorite = require("../models/Favorite");
+const TokenService = require("./token.service");
 
 
 class AuthService {
@@ -17,14 +20,29 @@ class AuthService {
         const hashedPassword = await bcrypt.hashSync(password, 7);
         const userRole = await Role.findOne({role: "USER"});
         // Пока роль передам строкой , потом наверно поменяю на _id
+        let userBasket = await new Basket();
+        let userFavorite = await new Favorite();
+
 
         const {_id, role} = await User.create(
-            {username, email, password: hashedPassword, role: userRole.role}
+            {
+                username,
+                email,
+                password: hashedPassword,
+                role: userRole.role,
+                basket: userBasket?._id,
+                favorite: userFavorite?._id
+            }
         );
-        const user = {_id, role, username, email};
-        const tokens = tokenService.generateTokens({user});
+        userBasket.userId = _id;
+        userFavorite.userId = _id;
+        await userBasket.save();
+        await userFavorite.save();
+
+        const tokens = tokenService.generateTokens({_id, role});
         await tokenService.saveToken(_id, tokens.refreshToken);
-        return {...tokens, user};
+
+        return {...tokens, userId: _id, role};
     }
 
 
@@ -39,20 +57,53 @@ class AuthService {
 
         if(!isPasswordEqual) {
             throw createError(400, "INVALID_PASSWORD");
-           
+
         }
 
-        const {_id, role, username} = candidate;
-        const user = {_id, role, username, email};
-        const tokens = tokenService.generateTokens({user});
+        const {_id, role} = candidate;
+
+        const tokens = tokenService.generateTokens({_id, role});
         await tokenService.saveToken(_id, tokens.refreshToken);
-        return {...tokens, user};
+        return {...tokens, userId: _id, role};
 
 
     }
 
 
-    async logout(email, password) {
+    async logout(refreshToken) {
+        try {
+            return await tokenService.removeToken(refreshToken);
+
+        } catch(error) {
+            return error;
+        }
+    }
+
+    async refresh(refreshToken) {
+        try {
+            if(!refreshToken) {
+                // throw createError(401, "Unauthorized");
+                return new Error("Unauthorized");
+            }
+            const data = TokenService.validateRefresh(refreshToken);
+
+            const dbToken = await TokenService.findToken(refreshToken);
+            
+            if(!data || !dbToken) {
+                // throw createError(401, "Unauthorized");
+                return new Error("Unauthorized");
+            }
+            const {_id, role} = data;
+
+            const tokens = TokenService.generateTokens({_id, role});
+            await TokenService.saveToken(_id, tokens.refreshToken);
+
+            return {...tokens, userId: _id, role};
+        } catch(error) {
+            return error.message;
+
+        }
+
     }
 
 

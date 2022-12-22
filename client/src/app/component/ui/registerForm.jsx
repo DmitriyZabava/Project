@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {useDispatch} from "react-redux";
 
 import TextField from "../common/form/textField";
 import CheckBox from "../common/form/checkBox";
-import { validator } from "../../utils/validator";
-import { validRegisterConfig } from "../../utils/validator.config";
-import { signUp } from "../../store/auth";
-import {
-    activeButtonClassName,
-    disabledButtonClassName,
-} from "../../utils/classesForSubmitButton";
+import {validator} from "../../utils/validator";
+import {validRegisterConfig} from "../../utils/validator.config";
+import {signUp} from "../../store/auth";
+import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
+import {useLocation} from "react-router-dom";
 
 function RegisterForm() {
     const dispatch = useDispatch();
@@ -32,63 +30,64 @@ function RegisterForm() {
         return Object.keys(errors).length === 0;
     };
 
-    const isValide = Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0;
 
     const handleChange = (target) => {
-        setData((prevState) => ({
+        setData((prevState) => ( {
             ...prevState,
             [target.name]: target.value,
-        }));
+        } ));
     };
+    const location = useLocation();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const isValid = validate();
-        if (!isValid) return;
-        dispatch(signUp({ ...data }));
-        console.log("REgisterdata", data);
+        if(!isValid) return;
+        dispatch(signUp({...data}));
+
     };
 
     return (
         <div>
-            <form className='space-y-4 md:space-y-6' onSubmit={handleSubmit}>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <TextField
-                    label='Username'
-                    type='text'
+                    label="Username"
+                    type="text"
                     value={data.username}
-                    name='username'
+                    name="username"
                     onChange={handleChange}
                     error={errors.username}
                 />
                 <TextField
-                    label='Email'
-                    type='text'
+                    label="Email"
+                    type="text"
                     value={data.email}
-                    name='email'
+                    name="email"
                     onChange={handleChange}
                     error={errors.email}
                 />
                 <TextField
-                    label='Password'
-                    type='password'
+                    label="Password"
+                    type="password"
                     value={data.password}
-                    name='password'
+                    name="password"
                     onChange={handleChange}
                     error={errors.password}
                 />
-                <div className='flex items-center justify-between'>
+                <div className="flex items-center justify-between">
                     <CheckBox
-                        name='license'
+                        name="license"
                         value={data.license}
-                        label='Соглашаюсь с правилами'
+                        label="Соглашаюсь с правилами"
                         onChange={handleChange}
                     />
                 </div>
                 <button
-                    type='submit'
-                    disabled={!isValide}
+                    type="submit"
+                    disabled={!isValid}
                     className={
-                        !isValide
+                        !isValid
                             ? disabledButtonClassName
                             : activeButtonClassName
                     }

@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { getaAtoBrand, getAutoBrandLoadStatus } from "../../../store/autoBrand";
-import {
-    getAutoModels,
-    getAutoModelsLoadStatus,
-} from "../../../store/autoModels";
+import React, {useEffect, useState} from "react";
+import {useSelector} from "react-redux";
+import {getaAtoBrand, getAutoBrandLoadStatus} from "../../../store/autoBrand";
+import {getAutoModels, getAutoModelsLoadStatus,} from "../../../store/autoModels";
 import paginate from "../../../utils/paginate";
 import Loader from "../../common/Loader";
 import Pagination from "../../common/Pagination";
@@ -32,24 +29,24 @@ function ShowcasePage() {
         setCurrentPage(1);
     }, [selectedBrand]);
 
-    if (autoModels && autoBrand) {
+    if(autoModels && autoBrand) {
         const filteredModels = selectedBrand
             ? autoModels.filter((model) => model.brand === selectedBrand)
             : autoModels;
         const count = filteredModels.length;
-        const autoModelsSliсe = paginate(filteredModels, currentPage, pageSize);
+        const autoModelsSlice = paginate(filteredModels, currentPage, pageSize);
 
         const clearFilter = () => {
             setSelectedBrand();
         };
-        if (!autoBrandLoading && !autoModelsLoading) {
+        if(!autoBrandLoading && !autoModelsLoading) {
             return (
-                <div className=''>
-                    <div className='font-bold  h-16 px-5  justify-between items-center flex '>
+                <div className="">
+                    <div className="font-bold  h-16 px-5  justify-between items-center flex ">
                         <span>Categories</span>
                     </div>
-                    <div className='flex flex-row'>
-                        <div className='flex flex-col shrink-0 basis-1/4'>
+                    <div className="flex flex-row">
+                        <div className="flex flex-col shrink-0 basis-1/4">
                             <AtoBrandList
                                 onBrandSelect={handleBrandSelect}
                                 autoBrand={autoBrand}
@@ -58,9 +55,9 @@ function ShowcasePage() {
                             />
                         </div>
 
-                        <div className='flex flex-col basis-3/4 '>
-                            <AutoModelsList autoModels={autoModelsSliсe} />
-                            <div className='flex content-center'>
+                        <div className="flex flex-col basis-3/4 ">
+                            <AutoModelsList autoModels={autoModelsSlice}/>
+                            <div className="flex content-center">
                                 <Pagination
                                     itemsCount={count}
                                     pageSize={pageSize}
@@ -74,8 +71,8 @@ function ShowcasePage() {
             );
         } else {
             return (
-                <div className='loader flex justify-center mt-20'>
-                    <Loader />
+                <div className="loader flex justify-center mt-20">
+                    <Loader/>
                 </div>
             );
         }

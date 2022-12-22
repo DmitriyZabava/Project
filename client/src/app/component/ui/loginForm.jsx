@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 
 import TextField from "../common/form/textField";
-import { validator } from "../../utils/validator";
-import { validLoginConfig } from "../../utils/validator.config";
+import {validator} from "../../utils/validator";
+import {validLoginConfig} from "../../utils/validator.config";
 import CheckBox from "../common/form/checkBox";
-import { useDispatch } from "react-redux";
-import { login } from "../../store/auth";
-import {
-    activeButtonClassName,
-    disabledButtonClassName,
-} from "../../utils/classesForSubmitButton";
-import { useLocation } from "react-router-dom";
+import {useDispatch} from "react-redux";
+import {login} from "../../store/auth";
+import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
+import {useLocation} from "react-router-dom";
 
 function LoginForm() {
     const dispatch = useDispatch();
@@ -36,50 +33,48 @@ function LoginForm() {
     const isValide = Object.keys(errors).length === 0;
 
     const handleChange = (target) => {
-        setData((prevState) => ({
+        setData((prevState) => ( {
             ...prevState,
             [target.name]: target.value,
-        }));
+        } ));
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const isValid = validate();
-        if (!isValid) return;
+        if(!isValid) return;
         dispatch(login(data));
-
-        console.log("loginData", data);
     };
 
     return (
         <div>
-            <form className='space-y-4 md:space-y-6' onSubmit={handleSubmit}>
+            <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
                 <TextField
-                    label='Email'
-                    type='text'
+                    label="Email"
+                    type="text"
                     value={data.email}
-                    name='email'
+                    name="email"
                     onChange={handleChange}
                     error={errors.email}
                 />
                 <TextField
-                    label='Password'
-                    type='password'
+                    label="Password"
+                    type="password"
                     value={data.password}
-                    name='password'
+                    name="password"
                     onChange={handleChange}
                     error={errors.password}
                 />
-                <div className='flex items-center justify-between'>
+                <div className="flex items-center justify-between">
                     <CheckBox
-                        name='remember'
+                        name="remember"
                         value={data.remember}
-                        label='Запомнить аккаунт'
+                        label="Запомнить аккаунт"
                         onChange={handleChange}
                     />
                 </div>
                 <button
-                    type='submit'
+                    type="submit"
                     disabled={!isValide}
                     className={
                         !isValide

@@ -1,5 +1,6 @@
 import {createSlice} from "@reduxjs/toolkit";
 import autoModelsService from "../service/autoModels.service";
+import adminService from "../service/admin.service";
 
 
 const autoModelsSlice = createSlice({
@@ -9,24 +10,46 @@ const autoModelsSlice = createSlice({
         isLoading: true,
         error: null,
         lastFetch: null,
+        dataLoaded: false
     },
     reducers: {
         autoModelsRequested: (state) => {
             state.isLoading = true;
-        }, autoModelsReceived: (state, action) => {
+        },
+        autoModelsReceived: (state, action) => {
             state.entities = action.payload;
             state.lastFetch = Date.now();
             state.isLoading = false;
+            state.dataLoaded = true;
         },
         autoModelsRequestedFailed: (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
+        },
+        modelCreateReceived: (state, action) => {
+            state.entities.push(action.payload);
+            state.isLoading = false;
+        },
+        modelRemoved: (state, action) => {
+            state.entities = state.entities.filter(
+                (comm) => comm._id !== action.payload
+            );
+            state.isLoading = false;
+        },
+        modelUpdated: (state, action) => {
         }
     }
 
 });
 const {reducer: autoModelsReducer, actions} = autoModelsSlice;
-const {autoModelsRequested, autoModelsReceived, autoModelsRequestedFailed} = actions;
+const {
+    autoModelsRequested,
+    autoModelsReceived,
+    autoModelsRequestedFailed,
+    modelCreateReceived,
+    modelRemoved,
+    modelUpdated
+} = actions;
 
 function isOutdated(date) {
     if(Date.now() - date > 10 * 60 * 1000) {
@@ -47,9 +70,23 @@ export const loadAutoModelsList = () => async (dispatch, getState) => {
         }
     }
 };
+
+export const createModel = (payload) => async (dispatch) => {
+    dispatch(autoModelsRequested());
+    try {
+        const data = await adminService.createModel(payload);
+        console.log("storeData", data);
+        dispatch(modelCreateReceived(data));
+    } catch(error) {
+        dispatch(autoModelsRequestedFailed(error.message));
+    }
+};
+
 export const getAutoModels = () => (state) => state.autoModels.entities;
 
 export const getAutoModelsLoadStatus = () => (state) => state.autoModels.isLoading;
+
+export const getModelsDataStatus = () => (state) => state.autoModels.dataLoaded;
 
 export const getAutoModelById = (autoModelId) => (state) => {
     if(state.autoModels.entities) {

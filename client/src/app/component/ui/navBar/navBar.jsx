@@ -1,57 +1,83 @@
-import {NavLink} from "react-router-dom";
+import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {getIsLoggedIn} from "../../../store/auth";
+import {getCurrentUser, getUserLoadingStatus} from "../../../store/user";
+import Loader from "../../common/Loader/loader";
 
 function NavBar() {
-    return (
-        <div>
-            <nav className='bg-gray-800 h-16 w-full'>
-                <label className='text-gray-300 text-4xl leading-relaxed px-28 font-semibold'>
-                    <NavLink to='/'>SHOP</NavLink>
-                </label>
-                <ul className='float-right mr-5'>
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/admin'
-                        >
-                            Admin
-                        </NavLink>
-                    </li>
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/'
-                        >
-                            Главная
-                        </NavLink>
-                    </li>
+    const dispatch = useDispatch();
+    const currentUser = useSelector(getCurrentUser());
+    const isLoggedIn = useSelector(getIsLoggedIn());
+    const userLoadingStatus = useSelector(getUserLoadingStatus());
 
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/'
+
+    if(userLoadingStatus) return <Loader/>;
+    console.log("username", currentUser.username);
+
+    return (
+        <header>
+            <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+                <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+                    {isLoggedIn ? <div className="flex items-center lg:order-2">
+                        <span
+                            className="text-gray-800 dark:text-white  focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none dark:focus:ring-gray-800">
+                            {currentUser.username}
+                        </span>
+                        <button
+
+                            className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
                         >
-                            Список Товаров
-                        </NavLink>
-                    </li>
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/basket'
+                            Выход
+                        </button>
+                    </div> : <div className="flex items-center lg:order-2">
+                        <span
+                            className="text-gray-800 dark:text-white  focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none dark:focus:ring-gray-800">
+                            {currentUser.username}
+                        </span>
+
+                        <Link
+                            to="/auth"
+                            className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800"
                         >
-                            Корзина
-                        </NavLink>
-                    </li>
-                    <li className='inline-block leading-relaxed py-4'>
-                        <NavLink
-                            className='text-gray-300 text-lg px-2 py-3 rounded uppercase hover:bg-gray-500 transition duration-1000'
-                            to='/auth'
-                        >
-                            Вход
-                        </NavLink>
-                    </li>
-                </ul>
+                            Вход/Регистрация
+                        </Link>
+                    </div>}
+                    <label className="text-gray-300 text-3xl leading-relaxed px-5 font-semibold">
+                        <Link to="/">SHOP</Link>
+                    </label>
+                    <div
+                        className="hidden justify-between w-full lg:flex lg:w-auto lg:mx-auto lg:content-end lg:order-1">
+                        <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+                            <li>
+                                <Link
+                                    to="/"
+                                    className="block py-2 px-5 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-gray-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                                >
+                                    Главная
+                                </Link>
+                            </li>
+
+                            <li>
+                                <Link
+                                    to="/admin"
+                                    className="block py-2 px-5 mx-auto text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-gray-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                                >
+                                    Admin
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    to="/basket"
+                                    className="block py-2 px-5 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-gray-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+                                >
+                                    Корзина
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </nav>
-        </div>
+        </header>
     );
 }
 

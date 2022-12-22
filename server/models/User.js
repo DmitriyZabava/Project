@@ -5,11 +5,10 @@ const User = new Schema({
     username: {type: String, required: true, unique: true},
     email: {type: String, required: true, unique: true},
     password: {type: String, required: true},
-    role: {type: String, ref: "Role"},
-    basket: [{type: String, ref: "AutoModels"}],
-    purchaseHistory: [{type: String, ref: "AutoModels"}]
-    // basket: [{type: Schema.Types.ObjectId, ref: "Models"}],
-    // purchaseHistory: [{type: Schema.Types.ObjectId, ref: "Models"}]
+    role: [{type: String, ref: "Role"}],
+    basket: {type: Schema.Types.ObjectId, ref: "Basket"},
+    purchaseHistory: [{type: String, ref: "AutoModels"}],
+    favorite: {type: Schema.Types.ObjectId, ref: "Favorite"}
 }, {
     timestamps: true
 });

@@ -2,7 +2,7 @@ import {Navigate} from "react-router-dom";
 
 import AdminPage from "../page/AdminPage";
 import AuthLayout from "../../layouts/authLayout";
-import BasketPage from "../page/basketPage";
+import BasketPage from "../page/BasketPage";
 import OneModelPage from "../page/OneModelPage";
 import Showcase from "../../layouts/showcase";
 import LoginForm from "../ui/loginForm";

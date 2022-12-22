@@ -1,80 +1,130 @@
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
-import { NavLink } from "react-router-dom";
+import {NavLink} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+
 import priceWithDiscount from "../../../utils/priceWithDiscount";
-import { redBasket } from "../../common/svg/svg.icon";
+import {emptyHeart, fillHeart, redBasket} from "../../common/svg/svg.icon";
+import {
+    addToFavorite,
+    getUserBasket,
+    getUserFavorite,
+    getUserLoadingStatus,
+    removeToFavorite
+} from "../../../store/user";
+import Loader from "../../common/Loader/loader";
 
 function AutoModelsCard({
-    image,
-    price,
-    _id,
-    id,
-    brand,
-    title,
-    discount,
-    isAvailable,
-    ...rest
-}) {
-    const { discountMoney, newPrice } = priceWithDiscount(price, discount);
+                            image,
+                            price,
+                            _id,
+                            id,
+                            brand,
+                            title,
+                            discount,
+                            isAvailable,
+                            ...rest
+                        }) {
 
+    const dispatch = useDispatch();
+    const userLoadingUserStatus = useSelector(getUserLoadingStatus());
+
+    const userFavorite = useSelector(getUserFavorite());
+
+    const userBasket = useSelector(getUserBasket());
+    const [favorite, setFavorite] = useState([]);
+    const {discountMoney, newPrice} = priceWithDiscount(price, discount);
+
+
+    useEffect(() => {
+        setFavorite(userFavorite);
+    }, []);
+
+
+    if(userLoadingUserStatus) return <Loader/>;
+
+
+    const modelInBasket = (modelId) => {
+        const model = {
+            modelId: {
+                modelId,
+                quantity: 1,
+                cost: newPrice
+
+            }
+        };
+    };
+    const handleAddToFavorite = (modelId) => {
+        console.log(modelId);
+        setFavorite(prevState => [...prevState, modelId]);
+        dispatch(addToFavorite(modelId)
+        );
+    };
+    const handleRemoveToFavorite = (modelId) => {
+        setFavorite(prevState => ( prevState.filter((item) => item !== modelId) ));
+        dispatch(removeToFavorite(modelId));
+    };
+    const modelInFavorite = favorite.includes(_id);
+
+
+    const handleAddBasket = () => {
+    };
     return (
-        <div className='p-2.5 w-60 mx-auto'>
+        <div className="p-2.5 w-60 mx-auto">
             <div
-                className='p-5 border border-gray-200  border-solid
+                className="p-5 border border-gray-200  border-solid
                 transition-all duration-300
-                hover:border-gray-400'
+                hover:border-gray-400"
             >
-                <p className='text-center pb-5 text-lime-700'>
+                <p className="text-center pb-5 text-lime-700">
                     <span>В наличии {isAvailable} шт.</span>
                 </p>
-                <div className='relative items-center  h-2/4 transition-all  ease-in duration-300 hover:scale-110'>
+                <div className="relative items-center  h-2/4 transition-all ease-in duration-300 hover:scale-110">
                     <NavLink
                         to={`/${brand}/${id}`}
-                        className=' block text-center '
+                        className=" block text-center "
                     >
                         <img
                             src={image}
-                            alt='Изображение продукта'
-                            className='h-36 mx-auto'
+                            alt="Изображение подлокотника"
+                            className="h-36 mx-auto"
                         />
                     </NavLink>
-                    <span className='absolute top-0 right-0 p-1 bg-red-600 rounded-l-lg text-slate-300 text-sm'>
+                    <span className="absolute top-0 right-0 p-1 bg-red-600 rounded-l-lg text-slate-300 text-sm">
                         {discount}%
                     </span>
                 </div>
-                <div className='text-center pt-5 h-1/4'>
+                <div className="text-center pt-5 h-1/4">
                     <NavLink
                         to={`/${brand}/${id}`}
-                        className='h-16 text-sm text-black uppercase  text-clip overflow-hidden hover: transition-all hover:bg-zinc-400 block'
+                        className="h-16 text-sm text-black uppercase  text-clip overflow-hidden hover: transition-all hover:bg-zinc-400 block"
                     >
                         {title}
                     </NavLink>
-                    <button className=' p-1.5'>
-                        <svg
-                            xmlns='http://www.w3.org/2000/svg'
-                            fill='none'
-                            viewBox='0 0 24 24'
-                            strokeWidth={1.5}
-                            stroke='currentColor'
-                            className='w-6 h-6 stroke-red-600'
-                        >
-                            <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z'
-                            />
-                        </svg>
-                    </button>
-                    <p className='text-center text-2xl p-2'>
-                        <span className='imdiz-product__cost'>
+
+                    {modelInFavorite ?
+                        <button
+                            className=" px-1 flex text-xs items-center "
+                            onClick={() => handleRemoveToFavorite(_id)}
+                        >{fillHeart}</button> :
+                        <button
+                            className=" px-1 flex text-xs items-center "
+                            onClick={() => handleAddToFavorite(_id)}
+                        >{emptyHeart}</button>}
+
+                    <p className="text-center text-2xl p-2">
+                        <span className="imdiz-product__cost">
                             {newPrice} руб.
                         </span>
                     </p>
                 </div>
-                <div className=' flex text-center items-center mx-auto h-1/4'>
-                    {redBasket}
-                    <button className='w-40 bg-red-500 rounded-full  ml-0 mr-auto py-1 hover:bg-red-400'>
+                <div className=" flex text-center items-center mx-auto h-1/4">
+
+                    <button className="w-40 bg-red-500 rounded  ml-0 mr-auto py-1 hover:bg-red-400"
+                            onClick={() => handleAddBasket(_id)}>
                         Добавить в корзину
                     </button>
+                    {redBasket}
                 </div>
             </div>
         </div>

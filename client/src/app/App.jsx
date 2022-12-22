@@ -1,33 +1,26 @@
-import {useEffect} from "react";
-import {useDispatch, useSelector} from "react-redux";
 import {useRoutes} from "react-router-dom";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
-import NavBar from "./component/ui/navBar";
-import {loadAutoBrandList} from "./store/autoBrand";
-import {loadAutoModelsList} from "./store/autoModels";
 import routes from "./component/appRouter/routes";
-import {getCurrentUserRole, getIsLoggetIn} from "./store/auth";
+import {useSelector} from "react-redux";
+import {getCurrentUserRole, getIsLoggedIn} from "./store/auth";
+import AppLoader from "./component/ui/hoc/appLoader";
+import NavBar from "./component/ui/navBar/";
 
 
 function App() {
-    const isLoggetIn = useSelector(getIsLoggetIn());
+    const isLoggedIn = useSelector(getIsLoggedIn());
     const currentUserRole = useSelector(getCurrentUserRole());
 
-    console.log("App,LOgt,ROLE", isLoggetIn, currentUserRole);
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(loadAutoModelsList());
-        dispatch(loadAutoBrandList());
-    }, []);
-
-    const elements = useRoutes(routes(isLoggetIn, currentUserRole));
+    const elements = useRoutes(routes(isLoggedIn, currentUserRole));
 
     return (
         <div className="md:container md:mx-auto">
-            <NavBar/>
-            {elements}
+            <AppLoader>
+                <NavBar/>
+
+                {elements}
+            </AppLoader>
             <ToastContainer/>
         </div>
     );

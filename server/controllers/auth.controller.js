@@ -2,6 +2,7 @@ const AuthService = require("../service/auth.service");
 const TokenService = require("../service/token.service");
 const {validationResult} = require("express-validator");
 
+
 class AuthController {
     async signUp(req, res, next) {
         try {
@@ -15,7 +16,7 @@ class AuthController {
                 });
             }
             const {email, password, username} = req.body;
-            
+
             const userData = await AuthService.signUp(email, password, username);
 
             return res.status(200).send(userData);
@@ -43,6 +44,7 @@ class AuthController {
             const {email, password} = req.body;
             const userData = await AuthService.login(email, password);
 
+
             return res.status(200).send(userData);
         } catch(error) {
             res.status(500).json({
@@ -55,6 +57,10 @@ class AuthController {
 
     async logout(req, res, next) {
         try {
+            const {refreshToken} = req.body;
+            const token = await AuthService.logout(refreshToken);
+
+            return res.status(200).json(token);
         } catch(error) {
             res.status(500).json({
                 error: error.message,
@@ -67,23 +73,9 @@ class AuthController {
     async token(req, res, next) {
         try {
             const {refreshToken} = req.body;
+            const userData = await AuthService.refresh(refreshToken);
 
-            const data = TokenService.validateRefresh(refreshToken);
-            const {user} = data;
-
-            const dbToken = await TokenService.findToken(refreshToken);
-
-
-            if(!user || !dbToken || user._id !== dbToken?.userId?.toString()) {
-                return res.status(401).json({
-                    message: "Unauthorized"
-                });
-            }
-
-            const tokens = TokenService.generateTokens({user});
-            await TokenService.saveToken(user._id, tokens.refreshToken);
-
-            res.status(200).send({...tokens, user});
+            res.status(200).send(userData);
         } catch(error) {
             res.status(500).json({
                 error: error.message,

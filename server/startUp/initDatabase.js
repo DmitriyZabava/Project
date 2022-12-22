@@ -22,6 +22,7 @@ module.exports = async () => {
 
         const autoBrand = await AutoBrand.find();
         if(autoBrand.length < autoBrandMock.length) {
+            // await createInitialDB(AutoBrand, autoBrandMock);
 
             await createBrand(AutoBrand, autoBrandMock, AutoModels);
         }
@@ -30,6 +31,25 @@ module.exports = async () => {
     } catch(error) {
     }
 };
+
+async function createInitialDB(Model, data, Modeltwo, datatwo) {
+    await Model.collection.drop();
+    return Promise.all(data.map(async (item) => {
+        try {
+            delete item._id;
+            let newItem = item.name = new Model(item);
+            newItem.save();
+
+            return newItem;
+
+        } catch(e) {
+            return e.message;
+
+        }
+    }));
+
+}
+
 
 async function createBrand(Model, data, modelsAuto) {
     await Model.collection.drop();
