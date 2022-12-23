@@ -13,8 +13,12 @@ router.get("/favorite/:id", UserController.findFavoriteById);
 
 router.patch("/favorite/:id", UserController.addToFavorite);
 
-router.patch("/favorite/delete/:id", UserController.removeToFavorite);
+router.patch("/favorite/delete/:id", UserController.removeFromFavorite);
 
 router.get("/basket/:id", UserController.findBasketById);
+
+router.patch("/basket/:id", UserController.addToBasket);
+
+router.patch("/basket/delete/:id", UserController.removeFromBasket);
 
 module.exports = router;

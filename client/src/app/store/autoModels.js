@@ -6,7 +6,7 @@ import adminService from "../service/admin.service";
 const autoModelsSlice = createSlice({
     name: "autoModels",
     initialState: {
-        entities: null,
+        entities: [],
         isLoading: true,
         error: null,
         lastFetch: null,
@@ -91,6 +91,15 @@ export const getModelsDataStatus = () => (state) => state.autoModels.dataLoaded;
 export const getAutoModelById = (autoModelId) => (state) => {
     if(state.autoModels.entities) {
         return state.autoModels.entities.find((model) => model.id === autoModelId);
+    } else {
+        return [];
+    }
+};
+export const getModelsById = (modelsId) => (dispatch, getState) => {
+    const {entities} = getState().autoModels;
+    if(entities) {
+        return modelsId.map((id) => entities.find((model) => model._id === id.modelId));
+
     }
 };
 

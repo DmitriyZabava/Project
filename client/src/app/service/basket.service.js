@@ -12,7 +12,13 @@ const userBasketService = {
     addBasket: async (model) => {
         const {data} = await httpServices.patch(
             userBasketEndPoint + localStorageService.getUser(),
-            model);
+            {model});
+        return data;
+    },
+    removeFromBasket: async (modelId) => {
+        const {data} = await httpServices.patch(
+            userBasketEndPoint + "delete/" + localStorageService.getUser(),
+            {modelId});
         return data;
     }
 };

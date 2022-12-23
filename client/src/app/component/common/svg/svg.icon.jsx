@@ -56,11 +56,11 @@ export const redBasket = (
 
 export const emptyHeart = ( <svg
     xmlns="http://www.w3.org/2000/svg"
-    fill="none"
+    fill="none "
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6 stroke-red-600"
+    className="w-6 h-6 stroke-red-600 hover:fill-red-300"
 >
     <path
         strokeLinecap="round"
@@ -76,7 +76,7 @@ export const fillHeart = ( <svg
     viewBox="0 0 24 24"
     strokeWidth={1.5}
     stroke="currentColor"
-    className="w-6 h-6 stroke-red-600"
+    className="w-6 h-6 stroke-red-600 hover:fill-red-400"
 >
     <path
         strokeLinecap="round"

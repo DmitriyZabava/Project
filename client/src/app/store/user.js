@@ -59,7 +59,15 @@ const userSlice = createSlice({
         addToBasketRequestedFailed: (state, action) => {
             state.error = action.payload;
             state.isLoading = false;
-        }
+        },
+        removeFromBasketReceived: (state, action) => {
+            state.entities.basket = action.payload;
+            state.isLoading = false;
+        },
+        removeFromBasketFailed: (state, action) => {
+            state.error = action.payload;
+            state.isLoading = false;
+        },
     }
 
 });
@@ -75,7 +83,9 @@ const {
     removeToFavoriteReceived,
     removeToFavoriteRequestedFailed,
     addToBasketReceived,
-    addToBasketRequestedFailed
+    addToBasketRequestedFailed,
+    removeFromBasketReceived,
+    removeFromBasketFailed
 
 } = actions;
 
@@ -83,8 +93,9 @@ const {
 const guestCreateRequested = createAction("user/guestCreateRequested");
 const userCreateReceived = createAction("user/userCreateReceived");
 const addToFavoriteRequested = createAction("user/addToFavoriteRequested");
-const removeToFavoriteRequested = createAction("user/removeToFavoriteRequested");
+const removeFromFavoriteRequested = createAction("user/removeToFavoriteRequested");
 const addToBasketRequested = createAction("user/addToBasketRequested");
+const removeFromBasketRequested = createAction("user/removeFromBasketRequested");
 
 export function createUser() {
     return async function(dispatch) {
@@ -105,6 +116,7 @@ export function createUser() {
                 dispatch(userCreateReceived());
             }
         } catch(error) {
+            dispatch(userRequestedFailed(error.message));
 
         }
     };
@@ -142,27 +154,39 @@ export const addToFavorite = (modelId) => async (dispatch) => {
 
     }
 };
-export const removeToFavorite = (modelId) => async (dispatch) => {
-    dispatch(removeToFavoriteRequested());
+export const removeFromFavorite = (modelId) => async (dispatch) => {
+    dispatch(removeFromFavoriteRequested());
     try {
         const data = await userFavoriteService.removeToFavorite(modelId);
         dispatch(removeToFavoriteReceived(data));
     } catch(error) {
-        dispatch(removeToFavoriteRequestedFailed());
+        dispatch(removeToFavoriteRequestedFailed(error.message));
 
     }
 };
 export const addToBasket = (model) => async (dispatch) => {
     dispatch(addToBasketRequested());
     try {
-        const data = userBasketService.addBasket(model);
+        const data = await userBasketService.addBasket(model);
         dispatch(addToBasketReceived(data));
     } catch(error) {
-        dispatch(addToBasketRequestedFailed());
+        dispatch(addToBasketRequestedFailed(error.message));
 
     }
 
 };
+export const removeFromBasket = (modelId) => async (dispatch) => {
+
+    dispatch(removeFromBasketRequested());
+    try {
+        const data = await userBasketService.removeFromBasket(modelId);
+        dispatch(removeToFavoriteReceived(data))
+    } catch(error) {
+        dispatch(removeFromBasketFailed(error.message));
+
+    }
+};
+
 export const userLogOut = () => async (dispatch) => {
     dispatch(userLoggedOut());
 };

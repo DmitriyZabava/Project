@@ -4,15 +4,20 @@ import {NavLink} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 
 import priceWithDiscount from "../../../utils/priceWithDiscount";
-import {emptyHeart, fillHeart, redBasket} from "../../common/svg/svg.icon";
 import {
+    addToBasket,
     addToFavorite,
     getUserBasket,
     getUserFavorite,
     getUserLoadingStatus,
-    removeToFavorite
+    removeFromBasket,
+    removeFromFavorite
 } from "../../../store/user";
-import Loader from "../../common/Loader/loader";
+import Loader from "../../common/Loader";
+import ButtonAddToBasket from "./buttonAddToBasket";
+import ButtonRemoveFromBasket from "../../common/buttonRemovoFromBasket";
+import ButtonAddToFavorite from "./buttonAddToFavorite";
+import ButtonRemoveFromFavorite from "./buttonRemoveFromFavorite";
 
 function AutoModelsCard({
                             image,
@@ -27,55 +32,58 @@ function AutoModelsCard({
                         }) {
 
     const dispatch = useDispatch();
-    const userLoadingUserStatus = useSelector(getUserLoadingStatus());
-
+    const userLoadingStatus = useSelector(getUserLoadingStatus());
     const userFavorite = useSelector(getUserFavorite());
-
     const userBasket = useSelector(getUserBasket());
+
+    const [basketModels, setBasketModels] = useState([]);
     const [favorite, setFavorite] = useState([]);
-    const {discountMoney, newPrice} = priceWithDiscount(price, discount);
+    const {newPrice} = priceWithDiscount(price, discount);
 
 
     useEffect(() => {
         setFavorite(userFavorite);
+        setBasketModels(userBasket);
     }, []);
 
 
-    if(userLoadingUserStatus) return <Loader/>;
+    if(userLoadingStatus) return <Loader/>;
 
-
-    const modelInBasket = (modelId) => {
-        const model = {
-            modelId: {
-                modelId,
-                quantity: 1,
-                cost: newPrice
-
-            }
-        };
-    };
     const handleAddToFavorite = (modelId) => {
-        console.log(modelId);
         setFavorite(prevState => [...prevState, modelId]);
         dispatch(addToFavorite(modelId)
         );
     };
-    const handleRemoveToFavorite = (modelId) => {
+    const handleRemoveFromFavorite = (modelId) => {
         setFavorite(prevState => ( prevState.filter((item) => item !== modelId) ));
-        dispatch(removeToFavorite(modelId));
+        dispatch(removeFromFavorite(modelId));
     };
     const modelInFavorite = favorite.includes(_id);
+    const modelInBasket = basketModels.find((model) => model.modelId === _id);
+
+    const createModel = (modelId) => {
+        return {
+            modelId,
+            quantity: 1,
+            cost: newPrice
+        };
+
+    };
+    const handleAddModelToBasket = (modelId) => {
+        const model = createModel(modelId);
+        setBasketModels(prevState => [...prevState, model]);
+        dispatch(addToBasket(model));
 
 
-    const handleAddBasket = () => {
+    };
+    const handleRemoveModelFromBasket = (modelId) => {
+        dispatch(removeFromBasket(modelId));
+        setBasketModels(prevState => prevState.filter((item) => item.modelId !== modelId));
     };
     return (
-        <div className="p-2.5 w-60 mx-auto">
-            <div
-                className="p-5 border border-gray-200  border-solid
-                transition-all duration-300
-                hover:border-gray-400"
-            >
+        <div className="h-[460px] p-2.5 w-60 mx-auto border border-gray-200  border-solid
+                hover:border-gray-400">
+            <div>
                 <p className="text-center pb-5 text-lime-700">
                     <span>В наличии {isAvailable} шт.</span>
                 </p>
@@ -97,35 +105,41 @@ function AutoModelsCard({
                 <div className="text-center pt-5 h-1/4">
                     <NavLink
                         to={`/${brand}/${id}`}
-                        className="h-16 text-sm text-black uppercase  text-clip overflow-hidden hover: transition-all hover:bg-zinc-400 block"
+                        className="h-16 text-sm text-black uppercase  text-clip overflow-hidden hover: transition-all hover:bg-zinc-300 block"
                     >
                         {title}
                     </NavLink>
 
                     {modelInFavorite ?
-                        <button
-                            className=" px-1 flex text-xs items-center "
-                            onClick={() => handleRemoveToFavorite(_id)}
-                        >{fillHeart}</button> :
-                        <button
-                            className=" px-1 flex text-xs items-center "
-                            onClick={() => handleAddToFavorite(_id)}
-                        >{emptyHeart}</button>}
+                        <ButtonRemoveFromFavorite
+                            id={_id}
+                            handleRemoveFromFavorite={handleRemoveFromFavorite}
+                        />
+                        :
+                        <ButtonAddToFavorite
+                            handleAddToFavorite={handleAddToFavorite}
+                            id={_id}
+                        />
+                    }
 
                     <p className="text-center text-2xl p-2">
-                        <span className="imdiz-product__cost">
+                        <span>
                             {newPrice} руб.
                         </span>
                     </p>
                 </div>
-                <div className=" flex text-center items-center mx-auto h-1/4">
-
-                    <button className="w-40 bg-red-500 rounded  ml-0 mr-auto py-1 hover:bg-red-400"
-                            onClick={() => handleAddBasket(_id)}>
-                        Добавить в корзину
-                    </button>
-                    {redBasket}
-                </div>
+                {!modelInBasket ?
+                    <ButtonAddToBasket
+                        id={_id}
+                        handleAddModelToBasket={handleAddModelToBasket}
+                    />
+                    :
+                    <ButtonRemoveFromBasket
+                        handleRemoveModelFromBasket={handleRemoveModelFromBasket}
+                        quantity={modelInBasket.quantity}
+                        id={_id}
+                    />
+                }
             </div>
         </div>
     );

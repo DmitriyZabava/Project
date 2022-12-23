@@ -3,16 +3,21 @@ import {useDispatch, useSelector} from "react-redux";
 import {getIsLoggedIn} from "../../../store/auth";
 import {getCurrentUser, getUserLoadingStatus} from "../../../store/user";
 import Loader from "../../common/Loader/loader";
+import {useEffect, useState} from "react";
 
 function NavBar() {
     const dispatch = useDispatch();
     const currentUser = useSelector(getCurrentUser());
     const isLoggedIn = useSelector(getIsLoggedIn());
     const userLoadingStatus = useSelector(getUserLoadingStatus());
+    const [userName, setUserName] = useState("");
+    useEffect(() => {
+        setUserName(currentUser.username);
+    }, []);
 
 
     if(userLoadingStatus) return <Loader/>;
-    console.log("username", currentUser.username);
+
 
     return (
         <header>
@@ -21,7 +26,7 @@ function NavBar() {
                     {isLoggedIn ? <div className="flex items-center lg:order-2">
                         <span
                             className="text-gray-800 dark:text-white  focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none dark:focus:ring-gray-800">
-                            {currentUser.username}
+                            {userName}
                         </span>
                         <button
 
@@ -32,7 +37,7 @@ function NavBar() {
                     </div> : <div className="flex items-center lg:order-2">
                         <span
                             className="text-gray-800 dark:text-white  focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2  focus:outline-none dark:focus:ring-gray-800">
-                            {currentUser.username}
+                            {userName}
                         </span>
 
                         <Link

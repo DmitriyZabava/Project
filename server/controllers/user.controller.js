@@ -57,7 +57,11 @@ class UserController {
             if(modelsId.includes(modelId)) {
                 res.status(200).send(modelsId);
             } else {
-                const {modelsId} = await Favorite.findOneAndUpdate({userId: id}, {$push: {modelsId: modelId}}, {new: true});
+                const {modelsId} = await Favorite.findOneAndUpdate(
+                    {userId: id},
+                    {$push: {modelsId: modelId}},
+                    {new: true}
+                );
                 res.status(200).send(modelsId);
             }
         } catch(error) {
@@ -69,15 +73,65 @@ class UserController {
     }
 
 
-    async removeToFavorite(req, res, next) {
+    async removeFromFavorite(req, res, next) {
         try {
             const {id} = req.params;
             const {modelId} = req.body;
             const favorite = await Favorite.findOne({userId: id});
-            const filteredModels = favorite.modelsId.filter(i => i !== modelId);
-            const {modelsId} = await Favorite.findOneAndUpdate({userId: id}, {$set: {modelsId: filteredModels}}, {new: true});
+            const filteredModels = favorite.modelsId.filter(item => item !== modelId);
+
+            const {modelsId} = await Favorite.findOneAndUpdate(
+                {userId: id},
+                {$set: {modelsId: filteredModels}}
+                , {new: true}
+            );
             res.status(200).send(modelsId);
         } catch(error) {
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
+
+        }
+    }
+
+    async addToBasket(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {model} = req.body;
+            const {userBasket} = await Basket.findOneAndUpdate(
+                {userId: id},
+                {$push: {userBasket: model}},
+                {new: true}
+            );
+            res.status(200).send(userBasket);
+        } catch(error) {
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
+        }
+    }
+
+    async removeFromBasket(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {modelId} = req.body;
+            console.log(modelId);
+            const basket = await Basket.findOne({userId: id});
+            const filteredBasket = basket.userBasket.filter((item) => item.modelId !== modelId);
+            const {userBasket} = await Basket.findOneAndUpdate(
+                {userId: id},
+                {$set: {userBasket: filteredBasket}},
+                {new: true}
+            );
+
+            res.status(200).send(userBasket);
+        } catch(error) {
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
 
         }
     }
