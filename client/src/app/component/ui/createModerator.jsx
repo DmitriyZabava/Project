@@ -15,7 +15,6 @@ function CreateModerator({onVisible}) {
         username: "",
     };
     const {validate, isValid, handleChange, data, errors} = useForm(initialData);
-    console.log(isAdmin);
     const handleSubmit = (event) => {
         event.preventDefault();
         const isValid = validate();

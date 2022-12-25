@@ -15,6 +15,7 @@ const adminService = {
         return data;
     },
     deleteModel: async (modelId) => {
+        console.log("modrlId", modelId);
         const {data} = await httpServices.delete(fileConfig.adminEndPoint.model + "delete/" + modelId);
         return data;
     },
@@ -23,7 +24,6 @@ const adminService = {
         return data;
     },
     createBrand: async (payload) => {
-        console.log({payload});
         const {data} = await httpServices.post(fileConfig.adminEndPoint.brand + "create", payload);
         return data;
     },

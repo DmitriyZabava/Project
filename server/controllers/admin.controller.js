@@ -114,8 +114,8 @@ class AdminController {
     async deleteModel(req, res, next) {
         try {
             const {id} = req.params;
-            const model = await AutoModels.findByIdAndDelete(id);
-            res.status(200).send(model);
+            const {_id} = await AutoModels.findByIdAndDelete(id);
+            res.status(200).send(_id);
         } catch(error) {
             res.status(500).json({
                 eMessage: error.message,
@@ -141,7 +141,6 @@ class AdminController {
     async createBrand(req, res, next) {
         try {
             const {id, name} = req.body;
-            console.log(id, name);
             const brand = await AutoBrand.create({id: id, name: name});
             res.status(200).send(brand);
         } catch(error) {
@@ -199,7 +198,7 @@ class AdminController {
 
             const newBasket = await Basket.create({userName: username});
             const newFavorite = await Favorite.create({userName: username});
-            
+
             const {_id: userId, role} = await User.create(
                 {
                     username,

@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
 
-// import {validator} from "../../utils/validator";
-// import {validCreateModel} from "../../utils/validator.config";
 import TextField from "../common/form/textField";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
 import {useDispatch, useSelector} from "react-redux";
@@ -27,38 +25,6 @@ function CreateModels({onVisible}) {
     };
     const {validate, isValid, handleChange, data, errors} = useForm(initialData);
 
-
-    // const [data, setData] = useState(
-    //     {
-    //         id: "",
-    //         name: "",
-    //         brand: "",
-    //         title: "",
-    //         price: "",
-    //         color: "",
-    //         size: "",
-    //         isAvailable: "",
-    //         discount: "",
-    //     }
-    // );
-    // const [errors, setErrors] = useState({});
-    // useEffect(() => {
-    //     validate();
-    // }, [data]);
-    //
-    // const validate = () => {
-    //     const errors = validator(data, validCreateModel);
-    //     setErrors(errors);
-    //     return Object.keys(errors).length === 0;
-    // };
-    // const isValid = Object.keys(errors).length === 0;
-    //
-    // const handleChange = (target) => {
-    //     setData((prevState) => ( {
-    //         ...prevState,
-    //         [target.name]: target.value,
-    //     } ));
-    // };
     const [image, setImg] = useState(( null ));
     const fileChange = (target) => {
         setImg(target);

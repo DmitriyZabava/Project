@@ -63,7 +63,6 @@ export const createBrand = (payload) => async (dispatch) => {
 
     try {
         const data = await adminService.createBrand(payload);
-        console.log(data);
         dispatch(createBrandReceived(data));
     } catch(error) {
         dispatch(autoBrandRequestedFailed(error.message));

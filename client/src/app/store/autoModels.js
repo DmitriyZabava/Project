@@ -75,6 +75,17 @@ export const createModel = (payload) => async (dispatch) => {
         dispatch(autoModelsRequestedFailed(error.message));
     }
 };
+export const removeModel = ({modelDelete}) => async (dispatch) => {
+    dispatch(autoModelsRequested());
+    try {
+        const data = await adminService.deleteModel(modelDelete);
+        console.log("Data", data);
+        dispatch(modelRemoved(data));
+    } catch(error) {
+        dispatch(autoModelsRequestedFailed(error.message));
+
+    }
+};
 
 export const getAutoModels = () => (state) => state.autoModels.entities;
 

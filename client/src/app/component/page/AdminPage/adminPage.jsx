@@ -6,6 +6,7 @@ import {useSelector} from "react-redux";
 import CreateAutoBrand from "../../ui/createAutoBrand";
 import {getHighAccessLevel} from "../../../store/user";
 import CreateModerator from "../../ui/createModerator";
+import RemoveModel from "../../ui/removeModel";
 
 
 function AdminPage() {
@@ -22,6 +23,8 @@ function AdminPage() {
             <span>Админ Панель</span>
             <button onClick={() => toggleVisible("BRAND")}><span>Создать Брэнд</span></button>
             <button onClick={() => toggleVisible("MODEL")}><span>Создать Модель</span></button>
+            <button onClick={() => toggleVisible("DELETE_MODEL")}><span>Удалить Модель</span></button>
+
             {highAccessLevel &&
                 <button onClick={() => toggleVisible("MODERATOR")}><span>Создать Модератора</span></button>}
         </div>
@@ -29,6 +32,7 @@ function AdminPage() {
         {modal && <Modal toggleClose={toggleVisible}>
             {modalContent === "BRAND" && <CreateAutoBrand onVisible={toggleVisible}/>}
             {modalContent === "MODEL" && <CreateModels onVisible={toggleVisible}/>}
+            {modalContent === "DELETE_MODEL" && <RemoveModel onVisible={toggleVisible}/>}
             {modalContent === "MODERATOR" && <CreateModerator onVisible={toggleVisible}/>}
 
         </Modal>}
