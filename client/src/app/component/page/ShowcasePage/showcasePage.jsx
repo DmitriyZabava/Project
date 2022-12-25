@@ -7,8 +7,10 @@ import Loader from "../../common/Loader";
 import Pagination from "../../common/Pagination";
 import AtoBrandList from "../../ui/AtoBrandList/autoBrandList";
 import AutoModelsList from "../../ui/AutoModelsList";
+import SearchField from "../../common/form/serchField";
 
 function ShowcasePage() {
+    const [searchQuery, setSearchQuery] = useState("");
     const autoModels = useSelector(getAutoModels());
     const autoModelsLoading = useSelector(getAutoModelsLoadStatus());
     const autoBrand = useSelector(getaAtoBrand());
@@ -21,6 +23,9 @@ function ShowcasePage() {
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);
     };
+    const handleSearchQuery = ({target}) => {
+        setSearchQuery(target.value);
+    };
 
     const handleBrandSelect = (brand) => {
         setSelectedBrand(brand);
@@ -28,11 +33,13 @@ function ShowcasePage() {
     useEffect(() => {
         setCurrentPage(1);
     }, [selectedBrand]);
-
     if(autoModels && autoBrand) {
-        const filteredModels = selectedBrand
-            ? autoModels.filter((model) => model.brand === selectedBrand)
-            : autoModels;
+        const filteredModels = searchQuery ?
+            autoModels.filter((model) => model.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1)
+            : selectedBrand
+                ? autoModels.filter((model) => model.brand === selectedBrand)
+                : autoModels;
+
         const count = filteredModels.length;
         const autoModelsSlice = paginate(filteredModels, currentPage, pageSize);
 
@@ -42,8 +49,14 @@ function ShowcasePage() {
         if(!autoBrandLoading && !autoModelsLoading) {
             return (
                 <div className="">
-                    <div className="font-bold  h-16 px-5  justify-between items-center flex ">
+                    <div
+                        className="font-bold  h-16 px-5  justify-between items-center flex rounded-lg focus:border-gray-500">
                         <span>Categories</span>
+
+                        <SearchField
+                            onSearch={handleSearchQuery}
+                            searchQuery={searchQuery}
+                        />
                     </div>
                     <div className="flex flex-row">
                         <div className="flex flex-col shrink-0 basis-1/4">

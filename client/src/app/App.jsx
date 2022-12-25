@@ -7,6 +7,7 @@ import {getIsLoggedIn} from "./store/auth";
 import AppLoader from "./component/ui/hoc/appLoader";
 import NavBar from "./component/ui/navBar/";
 import {getAccessLevel} from "./store/user";
+import Footer from "./component/common/footer";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                 <NavBar/>
 
                 {elements}
+                <Footer/>
             </AppLoader>
             <ToastContainer/>
         </div>
