@@ -4,6 +4,7 @@ import authService from "../service/auth.service";
 import localStorageService from "../service/localStorage.service";
 import {createUser} from "./user";
 import adminService from "../service/admin.service";
+import generateAuthError from "../utils/generateAuthError";
 
 
 const authSlice = createSlice({
@@ -77,7 +78,13 @@ export const signUp =
                 dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
                 dispatch(createUser(data.userId));
             } catch(error) {
-                dispatch(authRequestedFailed(error.message));
+                const {code, message} = error.response.data.error;
+                if(code === 400) {
+                    const errorMessage = generateAuthError(message);
+                    dispatch(authRequestedFailed(errorMessage));
+                } else {
+                    dispatch(authRequestedFailed(error.message));
+                }
             }
         };
 
@@ -101,7 +108,13 @@ export const login =
                 dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
                 dispatch(createUser(data.userId));
             } catch(error) {
-                dispatch(authRequestedFailed(error.message));
+                const {code, message} = error.response.data.error;
+                if(code === 400) {
+                    const errorMessage = generateAuthError(message);
+                    dispatch(authRequestedFailed(errorMessage));
+                } else {
+                    dispatch(authRequestedFailed(error.message));
+                }
             }
         };
 
@@ -126,6 +139,7 @@ export const checkAuth = () => async (dispatch) => {
 
 
 export const getIsLoggedIn = () => (state) => state.auth.isLoggedIn;
+export const getAuthError = () => (state) => state.auth.error;
 
 
 export default authReducer;

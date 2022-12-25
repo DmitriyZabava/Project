@@ -32,6 +32,15 @@ app.use(function(req, res, next) {
     next(createError(404));
 });
 app.use(errorMiddleware);
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(path.resolve(__dirname, "static")));
+    const indexPath = path.join(__dirname, "static", "index.html");
+    app.get("*", (req, res) => {
+        res.sendFile(indexPath);
+    });
+} else {
+    console.log(( "Development" ));
+}
 
 async function start() {
     try {

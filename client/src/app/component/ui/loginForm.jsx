@@ -1,16 +1,17 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
 import TextField from "../common/form/textField";
 import CheckBox from "../common/form/checkBox";
-import {login} from "../../store/auth";
+import {getAuthError, login} from "../../store/auth";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
 import useForm from "../../hook/useForm";
 
 function LoginForm() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const authError = useSelector(getAuthError());
     const initialData = {
         email: "",
         password: "",
@@ -53,6 +54,7 @@ function LoginForm() {
                         onChange={handleChange}
                     />
                 </div>
+                {authError && <p className="text-red-400 text-sm">{authError}</p>}
                 <button
                     type="submit"
                     disabled={!isValid}

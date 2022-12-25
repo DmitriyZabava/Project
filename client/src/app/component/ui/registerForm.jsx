@@ -1,10 +1,10 @@
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import TextField from "../common/form/textField";
 import CheckBox from "../common/form/checkBox";
 
-import {signUp} from "../../store/auth";
+import {getAuthError, signUp} from "../../store/auth";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
 import {useNavigate} from "react-router-dom";
 import useForm from "../../hook/useForm";
@@ -12,7 +12,8 @@ import useForm from "../../hook/useForm";
 
 function RegisterForm() {
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const authError = useSelector(getAuthError());
     const initialData = {
         email: "",
         password: "",
@@ -26,8 +27,8 @@ function RegisterForm() {
         event.preventDefault();
         const isValid = validate();
         if(!isValid) return;
-        dispatch(signUp({...data}))
-        navigate("/", {replace: true})
+        dispatch(signUp({...data}));
+        navigate("/", {replace: true});
 
 
     };
@@ -67,6 +68,7 @@ function RegisterForm() {
                         onChange={handleChange}
                     />
                 </div>
+                {authError && <p className="text-red-400 text-sm">{authError}</p>}
                 <button
                     type="submit"
                     disabled={!isValid}
