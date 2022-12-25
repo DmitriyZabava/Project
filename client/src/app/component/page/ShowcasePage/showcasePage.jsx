@@ -25,14 +25,19 @@ function ShowcasePage() {
     };
     const handleSearchQuery = ({target}) => {
         setSearchQuery(target.value);
+        setSelectedBrand(undefined);
     };
 
     const handleBrandSelect = (brand) => {
         setSelectedBrand(brand);
+        if(searchQuery !== "") {
+            setSearchQuery("");
+        }
     };
     useEffect(() => {
         setCurrentPage(1);
-    }, [selectedBrand]);
+    }, [selectedBrand, searchQuery]);
+
     if(autoModels && autoBrand) {
         const filteredModels = searchQuery ?
             autoModels.filter((model) => model.name.toLowerCase().indexOf(searchQuery.toLowerCase()) !== -1)
@@ -44,7 +49,8 @@ function ShowcasePage() {
         const autoModelsSlice = paginate(filteredModels, currentPage, pageSize);
 
         const clearFilter = () => {
-            setSelectedBrand();
+            setSelectedBrand(undefined);
+            setSearchQuery("");
         };
         if(!autoBrandLoading && !autoModelsLoading) {
             return (

@@ -9,7 +9,7 @@ function SearchField({onSearch, searchQuery}) {
             <input type="text"
                    name="searchQuery"
                    placeholder="Поиск модели"
-                   className="bg-gray-50 border border-gray-300"
+                   className="w-[400px] bg-gray-50 border border-gray-300"
                    onChange={onSearch}
                    value={searchQuery}
             />

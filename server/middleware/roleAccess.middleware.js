@@ -32,8 +32,5 @@ module.exports = function(roles) {
         } catch(error) {
             return res.status(401).json({message: "Unauthorized"});
         }
-
     };
-
-
 };
