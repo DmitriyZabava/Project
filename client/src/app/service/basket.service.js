@@ -20,6 +20,18 @@ const userBasketService = {
             userBasketEndPoint + "delete/" + localStorageService.getUser(),
             {modelId});
         return data;
+    },
+    increment: async (newBasket) => {
+        const {data} = await httpServices.patch(
+            userBasketEndPoint + "increment/" + localStorageService.getUser(),
+            {newBasket});
+        return data;
+    },
+    decrement: async (newBasket) => {
+        const {data} = await httpServices.patch(
+            userBasketEndPoint + "decrement/" + localStorageService.getUser(),
+            {newBasket});
+        return data;
     }
 };
 

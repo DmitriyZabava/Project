@@ -1,14 +1,15 @@
-import {useEffect} from "react";
+import React, {useEffect} from "react";
 import PropTypes from "prop-types";
 
 
 import {getModelsDataStatus, loadAutoModelsList} from "../../../store/autoModels";
 import {getBrandDataStatus, loadAutoBrandList} from "../../../store/autoBrand";
 import localStorageService from "../../../service/localStorage.service";
-import {checkAuth, getCurrentUserRole, getIsLoggedIn} from "../../../store/auth";
+import {checkAuth, getIsLoggedIn} from "../../../store/auth";
 import {useDispatch, useSelector} from "react-redux";
 import {createGuest, getUserLoadingStatus} from "../../../store/user";
 import Loader from "../../common/Loader";
+import {getDescriptionsDataStatus, loadDescriptions} from "../../../store/descriptions";
 
 function AppLoader({children}) {
     const dispatch = useDispatch();
@@ -16,17 +17,17 @@ function AppLoader({children}) {
     const brandDataStatus = useSelector(getBrandDataStatus());
     const modelsDataStatus = useSelector(getModelsDataStatus());
     const userLoadingStatus = useSelector(getUserLoadingStatus());
+    const descriptionDataStatus = useSelector(getDescriptionsDataStatus);
 
 
     const isLoggedIn = useSelector(getIsLoggedIn());
-    const currentUserRole = useSelector(getCurrentUserRole());
 
 
     useEffect(() => {
 
         dispatch(loadAutoModelsList());
         dispatch(loadAutoBrandList());
-        dispatch(loadAutoBrandList());
+        dispatch(loadDescriptions());
         if(currentToken && currentToken !== "undefined") {
             dispatch(checkAuth());
         } else {
@@ -35,7 +36,7 @@ function AppLoader({children}) {
 
     }, []);
 
-    if(!brandDataStatus || !modelsDataStatus || userLoadingStatus) {
+    if(!brandDataStatus || !modelsDataStatus || userLoadingStatus || !descriptionDataStatus) {
 
         return <Loader/>;
     } else {

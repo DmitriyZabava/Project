@@ -1,5 +1,7 @@
 {
   "apiEndPoint": "http://localhost:5000/api/v1/",
+  "oneRole": "ADMIN",
+  "secondRole": "MODERATOR",
   "adminEndPoint": {
     "model": "admin/model/",
     "brand": "admin/brand/",

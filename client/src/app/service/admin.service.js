@@ -23,7 +23,8 @@ const adminService = {
         return data;
     },
     createBrand: async (payload) => {
-        const {data} = await httpServices.post(fileConfig.adminEndPoint.brand + "create", {payload});
+        console.log({payload});
+        const {data} = await httpServices.post(fileConfig.adminEndPoint.brand + "create", payload);
         return data;
     },
     updateBrand: async (payload, modelId) => {
@@ -34,9 +35,9 @@ const adminService = {
         const {data} = await httpServices.delete(fileConfig.adminEndPoint.brand + "delete/" + modelId);
         return data;
     },
-    createModerator: async ({email, password, username, role}) => {
+    createModerator: async ({email, password, username}) => {
         const {data} = await httpServices.post(fileConfig.adminEndPoint.moderator, {
-            email, password, username, role
+            email, password, username
         });
         return data;
     },

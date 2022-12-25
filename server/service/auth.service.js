@@ -19,30 +19,29 @@ class AuthService {
         }
         const hashedPassword = await bcrypt.hashSync(password, 7);
         const userRole = await Role.findOne({role: "USER"});
-        // Пока роль передам строкой , потом наверно поменяю на _id
-        let userBasket = await new Basket();
-        let userFavorite = await new Favorite();
 
 
-        const {_id, role} = await User.create(
+        const newBasket = await Basket.create({userName: username});
+        const newFavorite = await Favorite.create({userName: username});
+
+        const {_id: userId, role} = await User.create(
             {
                 username,
                 email,
                 password: hashedPassword,
                 role: userRole.role,
-                basket: userBasket?._id,
-                favorite: userFavorite?._id
+                basket: newBasket._id,
+                favorite: newFavorite._id
             }
         );
-        userBasket.userId = _id;
-        userFavorite.userId = _id;
-        await userBasket.save();
-        await userFavorite.save();
+        await Basket.findByIdAndUpdate(newBasket._id, {$set: {userId: userId}}, {new: true});
+        await Favorite.findByIdAndUpdate(newFavorite._id, {$set: {userId: userId}}, {new: true});
 
-        const tokens = tokenService.generateTokens({_id, role});
-        await tokenService.saveToken(_id, tokens.refreshToken);
 
-        return {...tokens, userId: _id, role};
+        const tokens = tokenService.generateTokens({userId, role});
+        await tokenService.saveToken(userId, tokens.refreshToken);
+
+        return {...tokens, userId: userId, role};
     }
 
 
@@ -88,7 +87,7 @@ class AuthService {
             const data = TokenService.validateRefresh(refreshToken);
 
             const dbToken = await TokenService.findToken(refreshToken);
-            
+
             if(!data || !dbToken) {
                 // throw createError(401, "Unauthorized");
                 return new Error("Unauthorized");

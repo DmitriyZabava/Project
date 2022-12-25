@@ -1,12 +1,17 @@
 import Modal from "../../common/Modal";
 import CreateModels from "../../ui/createModels";
 import React, {useState} from "react";
+import {useSelector} from "react-redux";
+
 import CreateAutoBrand from "../../ui/createAutoBrand";
+import {getHighAccessLevel} from "../../../store/user";
+import CreateModerator from "../../ui/createModerator";
 
 
 function AdminPage() {
     const [modal, setModal] = useState(false);
     const [modalContent, setModalContent] = useState("");
+    const highAccessLevel = useSelector(getHighAccessLevel());
 
     const toggleVisible = (content) => {
         setModal((prevState) => !prevState);
@@ -17,12 +22,14 @@ function AdminPage() {
             <span>Админ Панель</span>
             <button onClick={() => toggleVisible("BRAND")}><span>Создать Брэнд</span></button>
             <button onClick={() => toggleVisible("MODEL")}><span>Создать Модель</span></button>
-            <button onClick={() => toggleVisible("MODERATOR")}><span>Создать Модератора</span></button>
+            {highAccessLevel &&
+                <button onClick={() => toggleVisible("MODERATOR")}><span>Создать Модератора</span></button>}
         </div>
 
         {modal && <Modal toggleClose={toggleVisible}>
             {modalContent === "BRAND" && <CreateAutoBrand onVisible={toggleVisible}/>}
             {modalContent === "MODEL" && <CreateModels onVisible={toggleVisible}/>}
+            {modalContent === "MODERATOR" && <CreateModerator onVisible={toggleVisible}/>}
 
         </Modal>}
     </div>;

@@ -3,16 +3,16 @@ import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import routes from "./component/appRouter/routes";
 import {useSelector} from "react-redux";
-import {getCurrentUserRole, getIsLoggedIn} from "./store/auth";
+import {getIsLoggedIn} from "./store/auth";
 import AppLoader from "./component/ui/hoc/appLoader";
 import NavBar from "./component/ui/navBar/";
+import {getAccessLevel} from "./store/user";
 
 
 function App() {
     const isLoggedIn = useSelector(getIsLoggedIn());
-    const currentUserRole = useSelector(getCurrentUserRole());
-
-    const elements = useRoutes(routes(isLoggedIn, currentUserRole));
+    const accessLevel = useSelector(getAccessLevel());
+    const elements = useRoutes(routes(isLoggedIn, accessLevel));
 
     return (
         <div className="md:container md:mx-auto">

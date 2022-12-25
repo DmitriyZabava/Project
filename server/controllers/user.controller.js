@@ -15,7 +15,7 @@ class UserController {
         } catch(error) {
             res.status(500).json({
                 eMessage: error.message,
-                message: "SERVER_ERROR"
+                message: "Internal Server Error"
             });
         }
 
@@ -104,6 +104,7 @@ class UserController {
                 {$push: {userBasket: model}},
                 {new: true}
             );
+
             res.status(200).send(userBasket);
         } catch(error) {
             res.status(500).json({
@@ -117,8 +118,8 @@ class UserController {
         try {
             const {id} = req.params;
             const {modelId} = req.body;
-            console.log(modelId);
             const basket = await Basket.findOne({userId: id});
+
             const filteredBasket = basket.userBasket.filter((item) => item.modelId !== modelId);
             const {userBasket} = await Basket.findOneAndUpdate(
                 {userId: id},
@@ -135,6 +136,44 @@ class UserController {
 
         }
     }
+
+    async incrementModel(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {newBasket} = req.body;
+            const {userBasket} = await Basket.findOneAndUpdate(
+                {userId: id},
+                {$set: {userBasket: newBasket}},
+                {new: true}
+            );
+
+            res.status(200).send(userBasket);
+        } catch(error) {
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
+        }
+    }
+
+    async decrementModel(req, res, next) {
+        try {
+            const {id} = req.params;
+            const {newBasket} = req.body;
+            const {userBasket} = await Basket.findOneAndUpdate(
+                {userId: id},
+                {$set: {userBasket: newBasket}},
+                {new: true}
+            );
+            res.status(200).send(userBasket);
+        } catch(error) {
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
+        }
+    }
+
 }
 
 module.exports = new UserController();

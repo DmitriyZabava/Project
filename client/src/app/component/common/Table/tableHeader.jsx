@@ -8,6 +8,7 @@ const TableHeader = ({columns}) => {
         <tr>
             {Object.keys(columns).map((column) => (
                 <th
+                    className="h-9 w-48 ml-auto font-extrabold"
                     key={column}
                     scope="col"
                 >

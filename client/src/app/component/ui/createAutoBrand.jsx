@@ -1,38 +1,29 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import TextField from "../common/form/textField";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
-import {validCreateBrand} from "../../utils/validator.config";
-import {validator} from "../../utils/validator";
+import useForm from "../../hook/useForm";
+import {useDispatch, useSelector} from "react-redux";
+import {getAccessLevel} from "../../store/user";
+import {createBrand} from "../../store/autoBrand";
 
 function CreateAutoBrand({onVisible}) {
-    const [errors, setErrors] = useState({});
-    const [data, setData] = useState({
+    const dispatch = useDispatch();
+    const isAccess = useSelector(getAccessLevel());
+    const initialData = {
         id: "",
         name: "",
-        brand: "",
-    });
-
-    useEffect(() => {
-        validate();
-    }, [data]);
-
-    const validate = () => {
-        const errors = validator(data, validCreateBrand);
-        setErrors(errors);
-        return Object.keys(errors).length === 0;
     };
-    const isValide = Object.keys(errors).length === 0;
-    const handleChange = (target) => {
-        setData((prevState) => ( {
-            ...prevState,
-            [target.name]: target.value,
-        } ));
-    };
+    const {validate, isValid, handleChange, data, errors} = useForm(initialData);
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const isValid = validate();
+        if(!isValid) return;
+
+        isAccess && dispatch(createBrand(data));
+        onVisible();
     };
     const toggleVisible = () => {
         onVisible();
@@ -56,19 +47,11 @@ function CreateAutoBrand({onVisible}) {
                 onChange={handleChange}
                 placeholder="Hyundai"
             />
-            <TextField
-                label="Модели"
-                type="text"
-                value={data.brand}
-                name="brand"
-                onChange={handleChange}
-                placeholder="hyundai"
-            />
             <button
                 type="submit"
-                disabled={!isValide}
+                disabled={!isValid}
                 className={
-                    !isValide
+                    !isValid
                         ? disabledButtonClassName
                         : activeButtonClassName
                 }

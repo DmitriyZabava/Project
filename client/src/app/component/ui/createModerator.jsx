@@ -1,35 +1,31 @@
 import React from "react";
-import {useDispatch} from "react-redux";
-
+import {useDispatch, useSelector} from "react-redux";
 import TextField from "../common/form/textField";
-import CheckBox from "../common/form/checkBox";
-
-import {signUp} from "../../store/auth";
-import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
-import {useNavigate} from "react-router-dom";
+import {activeButtonClassName, disabledButtonClassName} from "../../utils/classesForSubmitButton";
 import useForm from "../../hook/useForm";
+import {createModerator} from "../../store/auth";
+import {getHighAccessLevel} from "../../store/user";
 
-
-function RegisterForm() {
+function CreateModerator({onVisible}) {
     const dispatch = useDispatch();
-    const navigate = useNavigate()
+    const isAdmin = useSelector(getHighAccessLevel());
     const initialData = {
         email: "",
         password: "",
         username: "",
-        license: false,
     };
     const {validate, isValid, handleChange, data, errors} = useForm(initialData);
-
-
+    console.log(isAdmin);
     const handleSubmit = (event) => {
         event.preventDefault();
         const isValid = validate();
         if(!isValid) return;
-        dispatch(signUp({...data}))
-        navigate("/", {replace: true})
+        isAdmin && dispatch(createModerator({...data}));
+        onVisible();
 
-
+    };
+    const toggleVisible = () => {
+        onVisible();
     };
 
     return (
@@ -59,14 +55,6 @@ function RegisterForm() {
                     onChange={handleChange}
                     error={errors.password}
                 />
-                <div className="flex items-center justify-between">
-                    <CheckBox
-                        name="license"
-                        value={data.license}
-                        label="Соглашаюсь с правилами"
-                        onChange={handleChange}
-                    />
-                </div>
                 <button
                     type="submit"
                     disabled={!isValid}
@@ -78,9 +66,17 @@ function RegisterForm() {
                 >
                     Регистрация
                 </button>
+                <button
+                    onClick={toggleVisible}
+                    type="button"
+                    className={activeButtonClassName}
+                >
+                    Отмена
+                </button>
             </form>
         </div>
     );
 }
 
-export default RegisterForm;
+
+export default CreateModerator;

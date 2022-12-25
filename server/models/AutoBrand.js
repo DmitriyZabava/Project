@@ -8,5 +8,4 @@ const AutoBrand = new Schema({
     timestamps: true
 });
 
-
 module.exports = model("AutoBrand", AutoBrand);

@@ -16,7 +16,7 @@ function ShowcasePage() {
 
     const [selectedBrand, setSelectedBrand] = useState();
 
-    const pageSize = 8;
+    const pageSize = 4;
     const [currentPage, setCurrentPage] = useState(1);
     const handlePageChange = (pageIndex) => {
         setCurrentPage(pageIndex);

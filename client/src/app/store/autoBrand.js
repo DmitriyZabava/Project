@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import autoBrandService from "../service/autoBrand.service";
-
+import isOutdated from "../utils/isOutdated";
+import adminService from "../service/admin.service";
 
 const autoBrandSlice = createSlice({
     name: "autoBrand",
@@ -25,20 +26,18 @@ const autoBrandSlice = createSlice({
             state.error = action.payload;
             state.isLoading = false;
         },
+        createBrandReceived: (state, action) => {
+            state.entities.push(action.payload);
+            state.isLoading = false;
+        },
+
     },
 });
 
 const {reducer: autoBrandReducer, actions} = autoBrandSlice;
-const {autoBrandRequested, autoBrandReceived, autoBrandRequestedFailed} =
+const {autoBrandRequested, autoBrandReceived, autoBrandRequestedFailed, createBrandReceived} =
     actions;
 
-function isOutdated(date) {
-    if(Date.now() - date > 10 * 60 * 1000) {
-        return true;
-    }
-    return Date.now() - date > 10 * 60 * 1000;
-
-}
 
 export const loadAutoBrandList = () => async (dispatch, getState) => {
     const {lastFetch} = getState().autoBrand;
@@ -59,6 +58,18 @@ export const getAutoBrandLoadStatus = () => (state) =>
 
 export const getBrandDataStatus = () => (state) => state.autoBrand.dataLoaded;
 
+export const createBrand = (payload) => async (dispatch) => {
+    dispatch(autoBrandRequested());
+
+    try {
+        const data = await adminService.createBrand(payload);
+        console.log(data);
+        dispatch(createBrandReceived(data));
+    } catch(error) {
+        dispatch(autoBrandRequestedFailed(error.message));
+
+    }
+};
 export const getAutoBrandById = (autoBrandId) => (state) => {
     if(state.autoBrand.entities) {
         return state.autoBrand.entities.find(

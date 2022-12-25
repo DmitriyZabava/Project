@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 
-import {validator} from "../../utils/validator";
-import {validCreateModel} from "../../utils/validator.config";
+// import {validator} from "../../utils/validator";
+// import {validCreateModel} from "../../utils/validator.config";
 import TextField from "../common/form/textField";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {createModel} from "../../store/autoModels";
 import FileField from "../common/form/fileField";
+import useForm from "../../hook/useForm";
+import {getAccessLevel} from "../../store/user";
 
 function CreateModels({onVisible}) {
     const dispatch = useDispatch();
-    const [errors, setErrors] = useState({});
-    const [image, setImg] = useState(( null ));
-    const [data, setData] = useState({
+    const isAccess = useSelector(getAccessLevel());
+    const initialData = {
         id: "",
         name: "",
         brand: "",
@@ -23,33 +24,45 @@ function CreateModels({onVisible}) {
         size: "",
         isAvailable: "",
         discount: "",
-    });
-
-    useEffect(() => {
-        validate();
-    }, [data]);
-
-    const validate = () => {
-        const errors = validator(data, validCreateModel);
-        setErrors(errors);
-        return Object.keys(errors).length === 0;
     };
-    const isValid = Object.keys(errors).length === 0;
+    const {validate, isValid, handleChange, data, errors} = useForm(initialData);
 
-    const handleChange = (target) => {
-        setData((prevState) => ( {
-            ...prevState,
-            [target.name]: target.value,
-        } ));
-    };
+
+    // const [data, setData] = useState(
+    //     {
+    //         id: "",
+    //         name: "",
+    //         brand: "",
+    //         title: "",
+    //         price: "",
+    //         color: "",
+    //         size: "",
+    //         isAvailable: "",
+    //         discount: "",
+    //     }
+    // );
+    // const [errors, setErrors] = useState({});
+    // useEffect(() => {
+    //     validate();
+    // }, [data]);
+    //
+    // const validate = () => {
+    //     const errors = validator(data, validCreateModel);
+    //     setErrors(errors);
+    //     return Object.keys(errors).length === 0;
+    // };
+    // const isValid = Object.keys(errors).length === 0;
+    //
+    // const handleChange = (target) => {
+    //     setData((prevState) => ( {
+    //         ...prevState,
+    //         [target.name]: target.value,
+    //     } ));
+    // };
+    const [image, setImg] = useState(( null ));
     const fileChange = (target) => {
         setImg(target);
     };
-
-    function createFormData(formData, payload) {
-        return Object.keys(payload).map(item => formData.append(`${item}`, payload[item]));
-
-    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -58,7 +71,7 @@ function CreateModels({onVisible}) {
         const formData = new FormData();
         formData.append("img", image);
         formData.append("data", JSON.stringify(data));
-        dispatch(createModel(formData));
+        isAccess && dispatch(createModel(formData));
         onVisible();
     };
 

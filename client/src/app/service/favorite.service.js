@@ -16,7 +16,7 @@ const userFavoriteService = {
             {modelId: modelId});
         return data;
     },
-    removeToFavorite: async (modelId) => {
+    removeFromFavorite: async (modelId) => {
         const {data} = await httpServices.patch(
             userFavoriteEndPoint + "delete/" + localStorageService.getUser(),
             {modelId: modelId});

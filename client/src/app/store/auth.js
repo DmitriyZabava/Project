@@ -2,7 +2,8 @@ import {createAction, createSlice} from "@reduxjs/toolkit";
 
 import authService from "../service/auth.service";
 import localStorageService from "../service/localStorage.service";
-import {createUser, userLogOut} from "./user";
+import {createUser} from "./user";
+import adminService from "../service/admin.service";
 
 
 const authSlice = createSlice({
@@ -31,17 +32,38 @@ const authSlice = createSlice({
         authLogOut: (state) => {
             state.entities = null;
             state.isLoggedIn = false;
-        }
+        },
+        createModeratorRequested: (state) => {
+            state.error = null;
+            state.isLoading = true;
+        },
+        createModeratorRequestSuccess: (state, action) => {
+            state.entities = action.payload;
+            state.isLoggedIn = true;
+            state.isLoading = false;
+        },
+        createModeratorRequestedFailed: (state, action) => {
+            state.error = action.payload;
+            state.isLoading = false;
+        },
 
     },
 });
 const {reducer: authReducer, actions} = authSlice;
-const {authRequested, authRequestedFailed, authLogOut, authRequestSuccess} = actions;
+const {
+    authRequested,
+    authRequestedFailed,
+    authLogOut,
+    authRequestSuccess,
+    createModeratorRequested,
+    createModeratorRequestSuccess,
+    createModeratorRequestedFailed
+} = actions;
 const checkAuthRequested = createAction("auth/checkAuthRequested");
 
 
 export const signUp =
-    ({email, password, username, ...rest}) =>
+    ({email, password, username}) =>
         async (dispatch) => {
             dispatch(authRequested());
 
@@ -51,7 +73,6 @@ export const signUp =
                     password,
                     username,
                 });
-                console.log("SignUpData", data);
                 localStorageService.setTokens(data);
                 dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
                 dispatch(createUser(data.userId));
@@ -60,27 +81,33 @@ export const signUp =
             }
         };
 
-export const login = ({email, password}) => async (dispatch) => {
-    dispatch(authRequested());
+export const createModerator = ({email, password, username}) => async (dispatch) => {
+    dispatch(createModeratorRequested());
     try {
-        const data = await authService.login({email, password});
-        localStorageService.setTokens(data);
-        dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
-        dispatch(createUser(data.userId));
+        await adminService.createModerator({email, password, username});
     } catch(error) {
-        dispatch(authRequestedFailed(error.message));
+        dispatch(createModeratorRequestedFailed(error.message));
+
     }
 };
 
-export const logOut = () => async (dispatch) => {
-    try {
-        await authService.logout();
-        dispatch(authLogOut());
-        dispatch(userLogOut());
-    } catch(error) {
-        return error.message;
-    }
+export const login =
+    ({email, password}) =>
+        async (dispatch) => {
+            dispatch(authRequested());
+            try {
+                const data = await authService.login({email, password});
+                localStorageService.setTokens(data);
+                dispatch(authRequestSuccess({userId: data.userId, role: data.role}));
+                dispatch(createUser(data.userId));
+            } catch(error) {
+                dispatch(authRequestedFailed(error.message));
+            }
+        };
 
+export const logOut = () => (dispatch) => {
+    localStorageService.removeAuthData();
+    dispatch(authLogOut());
 
 };
 
@@ -96,11 +123,9 @@ export const checkAuth = () => async (dispatch) => {
 
     }
 };
-export const getIsAuthLoadingStatus = () => (state) => state.auth.isLoading
+
 
 export const getIsLoggedIn = () => (state) => state.auth.isLoggedIn;
-
-export const getCurrentUserRole = () => (state) => state.auth.entities?.currentUser?.role;
 
 
 export default authReducer;

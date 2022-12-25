@@ -14,10 +14,11 @@ import {
     removeFromFavorite
 } from "../../../store/user";
 import Loader from "../../common/Loader";
-import ButtonAddToBasket from "./buttonAddToBasket";
+import ButtonAddToBasket from "../../common/buttonAddToBasket";
 import ButtonRemoveFromBasket from "../../common/buttonRemovoFromBasket";
 import ButtonAddToFavorite from "./buttonAddToFavorite";
 import ButtonRemoveFromFavorite from "./buttonRemoveFromFavorite";
+import createModelObj from "../../../utils/createModel";
 
 function AutoModelsCard({
                             image,
@@ -61,16 +62,9 @@ function AutoModelsCard({
     const modelInFavorite = favorite.includes(_id);
     const modelInBasket = basketModels.find((model) => model.modelId === _id);
 
-    const createModel = (modelId) => {
-        return {
-            modelId,
-            quantity: 1,
-            cost: newPrice
-        };
 
-    };
     const handleAddModelToBasket = (modelId) => {
-        const model = createModel(modelId);
+        const model = createModelObj(modelId, newPrice);
         setBasketModels(prevState => [...prevState, model]);
         dispatch(addToBasket(model));
 
@@ -129,16 +123,22 @@ function AutoModelsCard({
                     </p>
                 </div>
                 {!modelInBasket ?
-                    <ButtonAddToBasket
-                        id={_id}
-                        handleAddModelToBasket={handleAddModelToBasket}
-                    />
+                    <div className=" flex text-center items-center mx-auto h-1/4">
+                        <ButtonAddToBasket
+                            id={_id}
+                            className="w-40 bg-blue-600 rounded   m-auto py-1 hover:bg-blue-400"
+                            handleAddModelToBasket={handleAddModelToBasket}
+                        />
+                    </div>
                     :
-                    <ButtonRemoveFromBasket
-                        handleRemoveModelFromBasket={handleRemoveModelFromBasket}
-                        quantity={modelInBasket.quantity}
-                        id={_id}
-                    />
+                    <div className="text-center items-center mx-auto h-1/4">
+                        <ButtonRemoveFromBasket
+                            onRemove={handleRemoveModelFromBasket}
+                            quantity={modelInBasket.quantity}
+                            id={_id}
+                            className="w-40 bg-red-400 rounded text-sm   m-auto py-1 hover:bg-red-300"
+                        />
+                    </div>
                 }
             </div>
         </div>

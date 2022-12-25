@@ -7,8 +7,9 @@ import OneModelPage from "../page/OneModelPage";
 import Showcase from "../../layouts/showcase";
 import LoginForm from "../ui/loginForm";
 import RegisterForm from "../ui/registerForm";
+import LogOut from "../../layouts/logOut";
 
-const routes = (isLoggetIn, currentUserRole) => [
+const routes = (isLoggedIn, accessLevel) => [
     {
         path: "/",
         element: <Showcase/>,
@@ -52,6 +53,10 @@ const routes = (isLoggetIn, currentUserRole) => [
         ],
     },
     {
+        path: "logout",
+        element: <LogOut/>
+    },
+    {
         path: "basket",
         element: <BasketPage/>,
         children: [
@@ -63,7 +68,11 @@ const routes = (isLoggetIn, currentUserRole) => [
     },
     {
         path: "admin",
-        element: <AdminPage/>,
+        element: accessLevel ? (
+            <AdminPage/>
+        ) : (
+            <Navigate to="/"/>
+        ),
     },
     {
         path: "*",

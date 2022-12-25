@@ -6,6 +6,7 @@ router.use("/auth", require("./auth.routes"));
 router.use("/user", require("./user.routes"));
 router.use("/autoBrand", require("./autoBrand.routes"));
 router.use("/autoModels", require("./autoModels.routes"));
+router.use("/descriptions", require("./descriptions.routes"));
 router.use("/admin", require("./admin.routes"));
 
 

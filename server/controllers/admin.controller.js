@@ -9,14 +9,14 @@ const User = require("../models/User");
 const Role = require("../models/Role");
 const tokenService = require("../service/token.service");
 const strConvert = require("../utils/strConvert");
+const Basket = require("../models/Basket");
+const Favorite = require("../models/Favorite");
 const PORT = config.get("PORT");
 
 class AdminController {
     async createModel(req, res, next) {
         try {
             const {id, name, brand, title, price, size, isAvailable, discount, color} = JSON.parse(req.body.data);
-
-
             const {img} = req.files;
             const fileName = `${strConvert(name)}_${Date.now()}.jpg`;
             await img.mv(path.resolve(__dirname, "..", "static", fileName));
@@ -61,7 +61,10 @@ class AdminController {
             }
 
         } catch(error) {
-            res.json(error);
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
 
         }
     }
@@ -74,7 +77,7 @@ class AdminController {
         } catch(error) {
             res.status(500).json({
                 eMessage: error.message,
-                message: "На сервере произошла ошибка Попробуйте позже ..."
+                message: "Internal Server Error"
             });
         }
     }
@@ -101,7 +104,10 @@ class AdminController {
             const updatedModel = await AutoModels.findByIdAndUpdate(_id, {$set: {...updateData}}, {new: true});
             res.status(200).send(updatedModel);
         } catch(error) {
-            throw createError(500, "Server ERROR");
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
         }
     }
 
@@ -111,7 +117,10 @@ class AdminController {
             const model = await AutoModels.findByIdAndDelete(id);
             res.status(200).send(model);
         } catch(error) {
-            throw createError(500, "Server ERROR");
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
 
         }
     }
@@ -124,18 +133,22 @@ class AdminController {
         } catch(error) {
             res.status(500).json({
                 eMessage: error.message,
-                message: "На сервере произошла ошибкаю Попробуйте позже ..."
+                message: "Internal Server Error"
             });
         }
     }
 
     async createBrand(req, res, next) {
         try {
-            const {id, name, models} = req.body;
-            const brand = await AutoBrand.create({id, name, models});
+            const {id, name} = req.body;
+            console.log(id, name);
+            const brand = await AutoBrand.create({id: id, name: name});
             res.status(200).send(brand);
         } catch(error) {
-            throw createError(500, "Server ERROR");
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
 
         }
     }
@@ -147,7 +160,10 @@ class AdminController {
             const updatedBrand = await AutoBrand.findByIdAndUpdate(_id, {$set: {...updateData}}, {new: true});
             res.status(200).send(updatedBrand);
         } catch(error) {
-            throw createError(500, "Server ERROR");
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
         }
     }
 
@@ -157,7 +173,10 @@ class AdminController {
             const brand = await AutoBrand.findByIdAndDelete(id);
             res.status(200).send(brand);
         } catch(error) {
-            throw createError(500, "Server ERROR");
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
 
         }
     }
@@ -177,14 +196,31 @@ class AdminController {
             }
             const hashedPassword = await bcrypt.hashSync(password, 10);
             const userRole = await Role.findOne({role: "MODERATOR"});
-            const {_id, role} = await User.create(
-                {username, email, password: hashedPassword, role: userRole.role}
+
+            const newBasket = await Basket.create({userName: username});
+            const newFavorite = await Favorite.create({userName: username});
+            
+            const {_id: userId, role} = await User.create(
+                {
+                    username,
+                    email,
+                    password: hashedPassword,
+                    role: userRole.role,
+                    basket: newBasket._id,
+                    favorite: newFavorite._id
+                }
             );
-            const tokens = tokenService.generateTokensForModerator({_id, role});
-            await tokenService.saveToken(_id, tokens.refreshToken);
+            await Basket.findByIdAndUpdate(newBasket._id, {$set: {userId: userId}}, {new: true});
+            await Favorite.findByIdAndUpdate(newFavorite._id, {$set: {userId: userId}}, {new: true});
+
+            const tokens = tokenService.generateTokensForModerator({userId, role});
+            await tokenService.saveToken(userId, tokens.refreshToken);
             res.status(200).send("Moderator Created Success");
         } catch(error) {
-
+            res.status(500).json({
+                eMessage: error.message,
+                message: "Internal Server Error"
+            });
         }
     }
 }

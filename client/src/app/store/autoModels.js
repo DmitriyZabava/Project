@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import autoModelsService from "../service/autoModels.service";
 import adminService from "../service/admin.service";
+import isOutdated from "../utils/isOutdated";
 
 
 const autoModelsSlice = createSlice({
@@ -51,12 +52,6 @@ const {
     modelUpdated
 } = actions;
 
-function isOutdated(date) {
-    if(Date.now() - date > 10 * 60 * 1000) {
-        return true;
-    }
-    return Date.now() - date > 10 * 60 * 1000;
-}
 
 export const loadAutoModelsList = () => async (dispatch, getState) => {
     const {lastFetch} = getState().autoModels;
@@ -75,7 +70,6 @@ export const createModel = (payload) => async (dispatch) => {
     dispatch(autoModelsRequested());
     try {
         const data = await adminService.createModel(payload);
-        console.log("storeData", data);
         dispatch(modelCreateReceived(data));
     } catch(error) {
         dispatch(autoModelsRequestedFailed(error.message));
@@ -95,11 +89,15 @@ export const getAutoModelById = (autoModelId) => (state) => {
         return [];
     }
 };
-export const getModelsById = (modelsId) => (dispatch, getState) => {
+export const getModelsByIdForBasket = (modelsId) => (dispatch, getState) => {
     const {entities} = getState().autoModels;
     if(entities) {
-        return modelsId.map((id) => entities.find((model) => model._id === id.modelId));
-
+        return modelsId.map((id) => {
+            const data = entities.find((model) => model._id === id.modelId);
+            const {quantity, cost} = id;
+            const {name, _id, image, price, discount, isAvailable, brand, id: model} = data;
+            return ( {_id, name, isAvailable, image, price, discount, quantity, cost, brand, model} );
+        });
     }
 };
 

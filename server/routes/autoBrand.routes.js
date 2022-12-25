@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
         res.status(200).send(autoBrand);
     } catch(error) {
         res.status(500).json({
-            message: "На сервере произошла ошибкаю Попробуйте позже ..."
+            message: "Internal Server Error"
         });
     }
 });

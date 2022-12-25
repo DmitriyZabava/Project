@@ -1,49 +1,29 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
+import {useDispatch} from "react-redux";
+import {useNavigate} from "react-router-dom";
 
 import TextField from "../common/form/textField";
-import {validator} from "../../utils/validator";
-import {validLoginConfig} from "../../utils/validator.config";
 import CheckBox from "../common/form/checkBox";
-import {useDispatch} from "react-redux";
 import {login} from "../../store/auth";
 import {activeButtonClassName, disabledButtonClassName,} from "../../utils/classesForSubmitButton";
-import {useLocation} from "react-router-dom";
+import useForm from "../../hook/useForm";
 
 function LoginForm() {
     const dispatch = useDispatch();
-    const location = useLocation();
-
-    const [data, setData] = useState({
+    const navigate = useNavigate();
+    const initialData = {
         email: "",
         password: "",
         remember: false,
-    });
-
-    const [errors, setErrors] = useState({});
-    useEffect(() => {
-        validate();
-    }, [data]);
-
-    const validate = () => {
-        const errors = validator(data, validLoginConfig);
-        setErrors(errors);
-        return Object.keys(errors).length === 0;
     };
-
-    const isValide = Object.keys(errors).length === 0;
-
-    const handleChange = (target) => {
-        setData((prevState) => ( {
-            ...prevState,
-            [target.name]: target.value,
-        } ));
-    };
+    const {validate, isValid, handleChange, data, errors} = useForm(initialData);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const isValid = validate();
         if(!isValid) return;
         dispatch(login(data));
+        navigate("/", {replace: true});
     };
 
     return (
@@ -75,9 +55,9 @@ function LoginForm() {
                 </div>
                 <button
                     type="submit"
-                    disabled={!isValide}
+                    disabled={!isValid}
                     className={
-                        !isValide
+                        !isValid
                             ? disabledButtonClassName
                             : activeButtonClassName
                     }

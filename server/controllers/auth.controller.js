@@ -23,8 +23,8 @@ class AuthController {
 
         } catch(error) {
             res.status(500).json({
-                error: error.message,
-                message: "На сервере произошла ошибка регистрации . Попробуйте позже ..."
+                eMessage: error.message,
+                message: "Internal Server Error"
             });
 
         }
@@ -48,8 +48,8 @@ class AuthController {
             return res.status(200).send(userData);
         } catch(error) {
             res.status(500).json({
-                error: error.message,
-                message: "На сервере произошла ошибка авторизации . Попробуйте позже ..."
+                eMessage: error.message,
+                message: "Internal Server Error"
             });
 
         }
@@ -63,8 +63,8 @@ class AuthController {
             return res.status(200).json(token);
         } catch(error) {
             res.status(500).json({
-                error: error.message,
-                message: "На сервере произошла ошибка . Попробуйте позже ..."
+                eMessage: error.message,
+                message: "Internal Server Error"
             });
 
         }
@@ -78,8 +78,8 @@ class AuthController {
             res.status(200).send(userData);
         } catch(error) {
             res.status(500).json({
-                error: error.message,
-                message: "На сервере произошла ошибка . Попробуйте позже ..."
+                eMessage: error.message,
+                message: "Internal Server Error"
             });
         }
     }
