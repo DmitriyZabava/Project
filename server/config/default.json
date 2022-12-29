@@ -1,0 +1,9 @@
+{
+  "PORT": 5000,
+  "corsOptions": {
+    "origin": "http://localhost:3000"
+  },
+  "mongoUri": "mongodb://uba3gh1zrdqbdr0ze53x:AfyMYbO4nAHWBxHzNS9v@n1-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017,n2-c2-mongodb-clevercloud-customers.services.clever-cloud.com:27017/bq1lphqytmp3cqk?replicaSet=rs0",
+  "accessSecret": "uba3g h1zrd qbdr0_ze53x",
+  "refreshSecret": "fyMY bO4n AHWBxH zN_S9v"
+}
